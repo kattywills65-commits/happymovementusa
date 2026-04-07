@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReliefPath — Loan Relief Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0b1f3a;
+    --navy-light: #132848;
+    --navy-dark: #07142a;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --gold-pale: #f5eed8;
+    --white: #ffffff;
+    --off-white: #f8f6f1;
+    --gray-100: #f0ede6;
+    --gray-200: #e0ddd6;
+    --gray-400: #9a9690;
+    --gray-600: #5e5b56;
+    --text: #0b1f3a;
+    --text-muted: #6b6860;
+    --success: #1a7a4a;
+    --warning: #b57d0f;
+    --danger: #a0311f;
+    --radius: 6px;
+    --radius-lg: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 68px;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--white); cursor: pointer;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-link {
+    color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500;
+    cursor: pointer; background: none; border: none; transition: color .2s;
+  }
+  .nav-link:hover { color: var(--white); }
+  .nav-link.active { color: var(--gold); }
+  .nav-cta {
+    background: var(--gold); color: var(--navy-dark);
+    border: none; padding: 9px 22px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ── PAGE WRAPPER ── */
+  .page { display: none; padding-top: 68px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    background: var(--gold); color: var(--navy-dark);
+    border: none; padding: 13px 30px; border-radius: var(--radius);
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: background .2s, transform .1s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.4); padding: 12px 28px;
+    border-radius: var(--radius); font-size: 15px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color .2s, background .2s;
+  }
+  .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+  .btn-navy {
+    background: var(--navy); color: var(--white);
+    border: none; padding: 12px 28px; border-radius: var(--radius);
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: background .2s;
+  }
+  .btn-navy:hover { background: var(--navy-light); }
+
+  /* ── LANDING PAGE ── */
+  .hero {
+    position: relative; overflow: hidden;
+    min-height: 88vh; display: flex; flex-direction: column; justify-content: center;
+    background: #111c2b;
+  }
+  .hero-photo {
+    position: absolute; inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1600&q=85&fit=crop&crop=right');
+    background-size: cover; background-position: center right;
+    opacity: 0.45;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(7,20,42,0.97) 40%, rgba(7,20,42,0.5) 75%, rgba(7,20,42,0.15) 100%);
+  }
+  .hero-content { position: relative; z-index: 2; padding: 120px 0 80px; }
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3);
+    padding: 6px 16px; border-radius: 99px;
+    color: var(--gold-light); font-size: 13px; font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .hero-badge::before { content: ''; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; }
+  .hero h1 {
+    font-size: 58px; font-weight: 700; color: var(--white);
+    line-height: 1.1; max-width: 640px; margin-bottom: 22px;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    color: rgba(255,255,255,0.72); font-size: 17px;
+    max-width: 480px; margin-bottom: 36px; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
+
+  /* Trust bar */
+  .hero-trust {
+    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.1);
+    max-width: 600px;
+  }
+  .trust-badge {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    padding: 10px 16px; border-radius: var(--radius);
+  }
+  .trust-badge .tb-icon { font-size: 20px; }
+  .trust-badge .tb-text { font-size: 12px; line-height: 1.3; }
+  .trust-badge .tb-text strong { display: block; color: var(--white); font-size: 13px; }
+  .trust-badge .tb-text span { color: rgba(255,255,255,0.5); }
+
+  /* Floating stats card */
+  .hero-stats-float {
+    position: absolute; right: 80px; bottom: 60px; z-index: 2;
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-lg); overflow: hidden;
+    display: grid; grid-template-columns: repeat(3,1fr);
+  }
+  .hero-stat {
+    padding: 20px 24px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700; color: var(--gold);
+    line-height: 1;
+  }
+  .hero-stat .label {
+    font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* Live chat bar */
+  .chat-bar {
+    position: fixed; bottom: 24px; left: 24px; z-index: 200;
+    background: var(--navy); color: var(--white);
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 22px; border-radius: 99px;
+    border: 1px solid rgba(201,168,76,0.3);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.25);
+    transition: background .2s;
+  }
+  .chat-bar:hover { background: var(--navy-light); }
+  .chat-dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+
+  /* How it works */
+  .section { padding: 88px 0; }
+  .section-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+  }
+  .section h2 { font-size: 40px; font-weight: 700; margin-bottom: 14px; color: var(--navy); }
+  .section-sub { font-size: 17px; color: var(--text-muted); max-width: 520px; line-height: 1.65; }
+
+  .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; margin-top: 56px; }
+  .step {
+    position: relative; padding: 36px 32px;
+    border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .step:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(11,31,58,0.09); }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 700; color: var(--gold-pale);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .step h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--navy); }
+  .step p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+  .step-connector {
+    position: absolute; top: 50px; right: -18px;
+    color: var(--gray-200); font-size: 22px; z-index: 1;
+  }
+
+  /* Eligibility */
+  .eligibility { background: var(--off-white); }
+  .elig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 56px; }
+  .elig-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 40px; border: 1px solid var(--gray-200);
+  }
+  .elig-card h3 { font-size: 22px; margin-bottom: 24px; color: var(--navy); }
+  .check-item { display: flex; gap: 12px; margin-bottom: 18px; align-items: flex-start; }
+  .check-icon {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .check-icon.yes { background: #dcf5e8; color: var(--success); }
+  .check-icon.no { background: #fde8e4; color: var(--danger); }
+  .check-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+  .elig-cta-box {
+    background: var(--navy); border-radius: var(--radius-lg);
+    padding: 48px 40px; color: var(--white);
+  }
+  .elig-cta-box h3 { font-size: 30px; font-weight: 700; margin-bottom: 16px; color: var(--white); }
+  .elig-cta-box p { color: rgba(255,255,255,0.65); margin-bottom: 28px; line-height: 1.65; }
+  .savings-preview {
+    background: rgba(255,255,255,0.08); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 28px;
+  }
+  .savings-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+  .savings-row .label { color: rgba(255,255,255,0.55); }
+  .savings-row .val { font-weight: 600; color: var(--white); }
+  .savings-row.highlight .val { color: var(--gold); font-size: 16px; }
+  .savings-divider { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 8px 0; }
+
+  /* Testimonials */
+  .testimonials { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+  .testimonial {
+    border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+    padding: 32px 28px;
+  }
+  .stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; }
+  .testimonial p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .author-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+  }
+  .author-name { font-weight: 600; font-size: 14px; }
+  .author-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* Footer */
+  footer {
+    background: var(--navy-dark); padding: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+  footer .logo { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); }
+  footer .logo span { color: var(--gold); }
+  footer p { font-size: 13px; color: rgba(255,255,255,0.4); }
+  footer .footer-links { display: flex; gap: 28px; }
+  footer .footer-link { font-size: 13px; color: rgba(255,255,255,0.5); cursor: pointer; }
+  footer .footer-link:hover { color: var(--white); }
+
+  /* ── APPLICATION FORM ── */
+  .form-page-header {
+    background: var(--navy); padding: 56px 0 48px;
+  }
+  .form-page-header h1 { font-size: 38px; color: var(--white); margin-bottom: 10px; }
+  .form-page-header p { color: rgba(255,255,255,0.6); font-size: 16px; }
+
+  .form-progress {
+    background: var(--off-white); border-bottom: 1px solid var(--gray-200);
+    padding: 0 48px;
+  }
+  .form-progress-inner {
+    max-width: 1160px; margin: 0 auto;
+    display: flex; align-items: stretch;
+  }
+  .progress-step {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 32px 20px 0; flex: 1;
+    border-bottom: 3px solid transparent; cursor: default;
+    transition: border-color .3s;
+  }
+  .progress-step.active { border-bottom-color: var(--gold); }
+  .progress-step.done { border-bottom-color: var(--success); }
+  .step-circle {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    background: var(--gray-200); color: var(--gray-600);
+    transition: background .3s, color .3s;
+  }
+  .progress-step.active .step-circle { background: var(--gold); color: var(--navy-dark); }
+  .progress-step.done .step-circle { background: var(--success); color: white; }
+  .step-name { font-size: 13px; font-weight: 500; color: var(--gray-600); }
+  .progress-step.active .step-name { color: var(--navy); font-weight: 600; }
+  .progress-step.done .step-name { color: var(--success); }
+
+  .form-body { padding: 56px 0; }
+  .form-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 48px;
+    max-width: 720px; margin: 0 auto;
+  }
+  .form-card h2 { font-size: 26px; margin-bottom: 8px; color: var(--navy); }
+  .form-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 36px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { margin-bottom: 22px; }
+  .form-group label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--navy); margin-bottom: 7px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius);
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--white);
+    transition: border-color .2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+  .form-section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold);
+    border-bottom: 1px solid var(--gray-100); padding-bottom: 10px;
+    margin-bottom: 24px; margin-top: 32px;
+  }
+
+  .form-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--gray-200);
+  }
+
+  .review-block {
+    background: var(--off-white); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 16px;
+  }
+  .review-block h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 12px; }
+  .review-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; }
+  .review-row .rl { color: var(--text-muted); }
+  .review-row .rv { font-weight: 500; color: var(--navy); }
+
+  .success-box {
+    text-align: center; padding: 60px 40px;
+  }
+  .success-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #dcf5e8; display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 24px;
+  }
+  .success-box h2 { font-size: 30px; margin-bottom: 12px; color: var(--navy); }
+  .success-box p { font-size: 15px; color: var(--text-muted); max-width: 420px; margin: 0 auto 28px; line-height: 1.65; }
+  .ref-code {
+    background: var(--gold-pale); border: 1px dashed var(--gold);
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: monospace; font-size: 20px; letter-spacing: 0.15em;
+    color: var(--navy); display: inline-block; margin-bottom: 32px;
+  }
+
+  /* ── LOGIN PAGE ── */
+  .login-page {
+    background: var(--off-white); min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px 24px;
+  }
+  .login-wrap { display: grid; grid-template-columns: 1fr 1fr; max-width: 900px; width: 100%; }
+  .login-left {
+    background: var(--navy); border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    padding: 56px 48px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .login-left h2 { font-size: 32px; color: var(--white); margin-bottom: 16px; }
+  .login-left p { color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.65; margin-bottom: 36px; }
+  .login-features { list-style: none; }
+  .login-features li {
+    display: flex; gap: 12px; align-items: flex-start;
+    color: rgba(255,255,255,0.75); font-size: 14px; margin-bottom: 14px;
+  }
+  .login-features li::before { content: '✦'; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+
+  .login-right {
+    background: var(--white); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    padding: 56px 48px;
+  }
+  .login-right h3 { font-size: 24px; margin-bottom: 6px; color: var(--navy); }
+  .login-right .sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+  .login-right .form-group { margin-bottom: 18px; }
+  .forgot { font-size: 13px; color: var(--gold); cursor: pointer; text-decoration: underline; }
+  .login-footer { margin-top: 24px; font-size: 13px; color: var(--text-muted); text-align: center; }
+  .login-footer span { color: var(--gold); cursor: pointer; font-weight: 600; }
+
+  /* ── USER DASHBOARD ── */
+  .dash-header {
+    background: var(--navy); padding: 36px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+  .dash-header-inner {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dash-header h2 { font-size: 26px; color: var(--white); }
+  .dash-header p { color: rgba(255,255,255,0.55); font-size: 14px; margin-top: 4px; }
+  .badge {
+    padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  }
+  .badge-pending { background: #fff4d6; color: #8a5c00; }
+  .badge-review { background: #dceeff; color: #1a4d8c; }
+  .badge-approved { background: #dcf5e8; color: #1a5c36; }
+  .badge-rejected { background: #fde8e4; color: #8c2419; }
+
+  .dash-body { padding: 40px 0; background: var(--off-white); min-height: calc(100vh - 200px); }
+  .dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
+
+  .card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 24px;
+  }
+  .card h3 { font-size: 18px; color: var(--navy); margin-bottom: 20px; }
+
+  /* Timeline */
+  .timeline { position: relative; }
+  .timeline::before {
+    content: ''; position: absolute; left: 18px; top: 8px;
+    bottom: 8px; width: 2px; background: var(--gray-200);
+  }
+  .tl-item { display: flex; gap: 20px; margin-bottom: 28px; position: relative; }
+  .tl-dot {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; border: 2px solid var(--gray-200);
+    background: var(--white); z-index: 1;
+  }
+  .tl-dot.done { background: var(--success); border-color: var(--success); color: white; }
+  .tl-dot.active { background: var(--gold); border-color: var(--gold); color: var(--navy-dark); }
+  .tl-dot.pending { background: var(--white); border-color: var(--gray-200); color: var(--gray-400); }
+  .tl-content { padding-top: 6px; }
+  .tl-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .tl-sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+  .tl-date { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+
+  .doc-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--gray-100);
+  }
+  .doc-item:last-child { border-bottom: none; }
+  .doc-name { font-size: 14px; color: var(--navy); font-weight: 500; }
+  .doc-status { font-size: 12px; font-weight: 600; }
+  .doc-status.uploaded { color: var(--success); }
+  .doc-status.needed { color: var(--warning); }
+
+  .summary-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item .sk { color: var(--text-muted); }
+  .summary-item .sv { font-weight: 500; color: var(--navy); }
+  .summary-item.highlight .sv { color: var(--success); font-size: 16px; font-family: 'Playfair Display', serif; }
+
+  /* ── ADMIN DASHBOARD ── */
+  .admin-layout { display: flex; min-height: calc(100vh - 68px); }
+  .admin-sidebar {
+    width: 220px; background: var(--navy); flex-shrink: 0;
+    padding: 28px 0; border-right: 1px solid rgba(201,168,76,0.15);
+  }
+  .sidebar-section { padding: 0 20px; margin-bottom: 6px; }
+  .sidebar-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); padding: 10px 12px 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 14px; border-radius: var(--radius);
+    color: rgba(255,255,255,0.65); font-size: 13.5px; font-weight: 500;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .sidebar-item.active { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .sidebar-icon { font-size: 15px; width: 20px; text-align: center; }
+  .admin-main { flex: 1; background: var(--off-white); padding: 32px 40px; overflow: auto; }
+  .admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .admin-topbar h2 { font-size: 24px; color: var(--navy); }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-bottom: 28px; }
+  .metric-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 22px 24px;
+  }
+  .metric-card .m-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .metric-card .m-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1;
+  }
+  .metric-card .m-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+  .metric-card .m-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 5px;
+  }
+
+  .table-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .table-header {
+    padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .table-header h3 { font-size: 16px; color: var(--navy); }
+  .table-controls { display: flex; gap: 12px; align-items: center; }
+  .search-input {
+    padding: 8px 14px; border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; width: 200px; transition: border-color .2s;
+    color: var(--text);
+  }
+  .search-input:focus { border-color: var(--gold); }
+  .filter-select {
+    padding: 8px 12px; border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; color: var(--text); background: white;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 12px 20px; text-align: left;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); background: var(--off-white);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  tbody td { padding: 15px 20px; border-bottom: 1px solid var(--gray-100); font-size: 13.5px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--off-white); }
+  .applicant-cell { display: flex; flex-direction: column; }
+  .applicant-name { font-weight: 600; color: var(--navy); }
+  .applicant-id { font-size: 12px; color: var(--text-muted); font-family: monospace; }
+  .action-btns { display: flex; gap: 8px; }
+  .btn-xs {
+    padding: 5px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+    transition: opacity .2s;
+  }
+  .btn-xs:hover { opacity: 0.8; }
+  .btn-approve { background: #dcf5e8; color: var(--success); }
+  .btn-reject { background: #fde8e4; color: var(--danger); }
+  .btn-view { background: var(--gray-100); color: var(--navy); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white); border-radius: var(--radius-lg);
+    width: 680px; max-width: 95vw; max-height: 85vh;
+    overflow-y: auto; padding: 40px 44px;
+    transform: translateY(20px); transition: transform .25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+  .modal-header h3 { font-size: 22px; color: var(--navy); }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-400); padding: 4px; }
+
+  /* Notification */
+  .notif {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--navy); color: var(--white);
+    padding: 14px 22px; border-radius: var(--radius-lg);
+    font-size: 14px; border-left: 4px solid var(--gold);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .3s, transform .3s; pointer-events: none; z-index: 300;
+  }
+  .notif.show { opacity: 1; transform: translateY(0); }
+  .notif.success { border-left-color: var(--success); }
+  .notif.error { border-left-color: var(--danger); }
+
+  /* Support chat widget */
+  .support-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 200;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--gold); color: var(--navy-dark);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    transition: transform .2s, background .2s;
+  }
+  .support-btn:hover { transform: scale(1.08); background: var(--gold-light); }
+  .support-panel {
+    position: fixed; bottom: 92px; right: 24px; z-index: 200;
+    width: 340px; background: var(--white);
+    border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 12px 48px rgba(11,31,58,0.18);
+    display: none; flex-direction: column;
+  }
+  .support-panel.open { display: flex; }
+  .support-panel-header {
+    background: var(--navy); padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .support-panel-header h4 { color: var(--white); font-size: 15px; }
+  .support-panel-header span { color: rgba(255,255,255,0.5); font-size: 12px; }
+  .support-close { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 16px; }
+  .support-messages { padding: 16px; flex: 1; max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+  .msg.agent { background: var(--off-white); color: var(--text); align-self: flex-start; border-bottom-left-radius: 3px; }
+  .msg.user { background: var(--navy); color: white; align-self: flex-end; border-bottom-right-radius: 3px; }
+  .support-input-row { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--gray-200); }
+  .support-input-row input {
+    flex: 1; padding: 9px 12px; border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; color: var(--text);
+  }
+  .support-input-row input:focus { border-color: var(--gold); }
+  .support-send {
+    background: var(--gold); color: var(--navy-dark); border: none;
+    padding: 9px 14px; border-radius: var(--radius); cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  /* signup card */
+  .signup-box { padding: 40px; }
+  .signup-box h2 { font-size: 24px; margin-bottom: 8px; color: var(--navy); }
+  .signup-box > p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+  .ref-banner {
+    background: var(--gold-pale); border: 1px solid var(--gold);
+    border-radius: var(--radius); padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .ref-banner .ref-label { font-size: 12px; color: var(--text-muted); }
+  .ref-banner .ref-val { font-family: monospace; font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: 0.1em; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  .fade-up { animation: fadeUp .5s ease forwards; }
+  .delay-1 { animation-delay: .1s; opacity:0; }
+  .delay-2 { animation-delay: .2s; opacity:0; }
+  .delay-3 { animation-delay: .3s; opacity:0; }
+  .delay-4 { animation-delay: .4s; opacity:0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('landing')">Relief<span>Path</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-home" onclick="showPage('landing')">Home</button>
+    <button class="nav-link" id="nav-apply" onclick="showPage('apply')">Apply Now</button>
+    <button class="nav-link" id="nav-login" onclick="showPage('login')">Login</button>
+    <button class="nav-cta" onclick="showPage('apply')">Get Relief Today</button>
+  </div>
+</nav>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- ════ LANDING PAGE ════ -->
+<div class="page active" id="page-landing">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-photo"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="container">
+        <div class="hero-badge fade-up">Trusted by 12,000+ Americans</div>
+        <h1 class="fade-up delay-1">Reduce Your Loan<br>Balance By Up To<br><span>50%</span></h1>
+        <p class="hero-sub fade-up delay-2">You pay half. We cover the rest — legally and transparently. ReliefPath puts struggling borrowers back in control of their financial future.</p>
+        <div class="hero-actions fade-up delay-3">
+          <button class="btn-primary" style="font-size:16px;padding:15px 32px;" onclick="showPage('apply')">Apply Now →</button>
+          <button class="btn-outline" onclick="showPage('login')">Track My Application</button>
+        </div>
+        <div class="hero-trust fade-up delay-4">
+          <div class="trust-badge">
+            <span class="tb-icon">🏆</span>
+            <div class="tb-text"><strong>A+ Rating</strong><span>BBB Accredited</span></div>
+          </div>
+          <div class="trust-badge">
+            <span class="tb-icon">🔒</span>
+            <div class="tb-text"><strong>256-bit SSL</strong><span>Bank-level security</span></div>
+          </div>
+          <div class="trust-badge">
+            <span class="tb-icon">⭐</span>
+            <div class="tb-text"><strong>4.9 / 5 Stars</strong><span>3,200+ reviews</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats-float">
+      <div class="hero-stat">
+        <div class="num">$2.4B</div>
+        <div class="label">Debt Relieved</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">12K+</div>
+        <div class="label">Clients Helped</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">50%</div>
+        <div class="label">Avg. Savings</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live chat bar -->
+  <div class="chat-bar" onclick="notify('Live chat coming soon on the full version.')">
+    <div class="chat-dot"></div>
+    Questions? Chat with a Relief Counselor
+  </div>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">How It Works</div>
+      <h2>Three steps to financial freedom</h2>
+      <p class="section-sub">Our streamlined process is designed to get you relief as quickly as possible, with full transparency at every stage.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Apply & Get Assessed</h3>
+          <p>Fill out our 4-step application in under 10 minutes. We review your loan details, income, and hardship situation to determine eligibility.</p>
+          <div class="step-connector">→</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Pay Your 50%</h3>
+          <p>Once approved, you'll pay 50% of your outstanding loan balance through our secure payment plan — at your own pace, with zero interest.</p>
+          <div class="step-connector">→</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>We Cover the Rest</h3>
+          <p>ReliefPath pays the remaining 50% directly to your lender, clearing your debt completely. You're done. No hidden fees.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Eligibility -->
+  <section class="section eligibility">
+    <div class="container">
+      <div class="section-label">Qualification</div>
+      <h2>Do you qualify?</h2>
+      <p class="section-sub">Most borrowers facing financial hardship are eligible. Here's what we look for.</p>
+      <div class="elig-grid">
+        <div class="elig-card">
+          <h3>Eligibility Requirements</h3>
+          <div class="check-item">
+            <div class="check-icon yes">✓</div>
+            <div class="check-text">Outstanding loan balance of $10,000 or more (personal, student, or auto loans)</div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon yes">✓</div>
+            <div class="check-text">Demonstrable financial hardship — job loss, medical bills, divorce, or significant income reduction</div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon yes">✓</div>
+            <div class="check-text">U.S. resident with a valid Social Security Number or ITIN</div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon yes">✓</div>
+            <div class="check-text">Loan must not be in active bankruptcy proceedings</div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon no">✗</div>
+            <div class="check-text">Mortgage loans, business loans, or government-backed SBA loans are not eligible</div>
+          </div>
+          <div class="check-item">
+            <div class="check-icon no">✗</div>
+            <div class="check-text">Loans already enrolled in another relief program</div>
+          </div>
+        </div>
+        <div class="elig-cta-box">
+          <h3>See Your Potential Savings</h3>
+          <p>Here's an example of what a typical ReliefPath client saves on a $100,000 loan.</p>
+          <div class="savings-preview">
+            <div class="savings-row"><span class="label">Original balance</span><span class="val">$100,000</span></div>
+            <div class="savings-row"><span class="label">Your payment (50%)</span><span class="val">$50,000</span></div>
+            <hr class="savings-divider">
+            <div class="savings-row highlight"><span class="label">ReliefPath covers</span><span class="val">$50,000</span></div>
+            <div class="savings-row highlight"><span class="label">You save</span><span class="val" style="color:#4ade80;">50% — $50,000</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;" onclick="showPage('apply')">Check My Eligibility →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Testimonials</div>
+      <h2>Real people, real relief</h2>
+      <p class="section-sub">Thousands of Americans have cleared their debt through ReliefPath. Here's what they say.</p>
+      <div class="testimonials">
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>"I had $78,000 in personal loan debt after losing my job. ReliefPath got me approved in two weeks. I paid $39,000 over 18 months and they cleared the rest. I genuinely can't believe it worked."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:#dcf5e8;color:#1a5c36;">MR</div>
+            <div>
+              <div class="author-name">Marcus R.</div>
+              <div class="author-sub">Dallas, TX — Saved $39,000</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>"After my divorce, I was drowning in debt. ReliefPath's team walked me through every step. Transparent, professional, and they actually delivered on what they promised."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:#dceeff;color:#1a4d8c;">SL</div>
+            <div>
+              <div class="author-name">Sandra L.</div>
+              <div class="author-sub">Atlanta, GA — Saved $22,500</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>"Skeptical at first, but my loan of $55,000 is now fully cleared. I paid just $27,500 over two years. The dashboard made it easy to track everything in real time."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:#fff4d6;color:#8a5c00;">JK</div>
+            <div>
+              <div class="author-name">James K.</div>
+              <div class="author-sub">Chicago, IL — Saved $27,500</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo">Relief<span>Path</span> &nbsp;©2024</div>
+    <p>This is a demonstration website. Not legal or financial advice.</p>
+    <div class="footer-links">
+      <span class="footer-link">Privacy Policy</span>
+      <span class="footer-link">Terms of Service</span>
+      <span class="footer-link">Contact Us</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ════ APPLICATION FORM ════ -->
+<div class="page" id="page-apply">
+  <div class="form-page-header">
+    <div class="container">
+      <div class="section-label" style="margin-bottom:8px;">Step-by-Step Application</div>
+      <h1>Apply for Loan Relief</h1>
+      <p>Takes about 10 minutes. No impact on your credit score.</p>
+    </div>
+  </div>
+
+  <div class="form-progress">
+    <div class="form-progress-inner" id="progress-steps">
+      <div class="progress-step active" id="ps-1">
+        <div class="step-circle" id="sc-1">1</div>
+        <div class="step-name">Personal Info</div>
+      </div>
+      <div class="progress-step" id="ps-2">
+        <div class="step-circle" id="sc-2">2</div>
+        <div class="step-name">Loan Details</div>
+      </div>
+      <div class="progress-step" id="ps-3">
+        <div class="step-circle" id="sc-3">3</div>
+        <div class="step-name">Financial Info</div>
+      </div>
+      <div class="progress-step" id="ps-4">
+        <div class="step-circle" id="sc-4">4</div>
+        <div class="step-name">Review & Submit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-body" style="background:var(--off-white);">
+    <div class="container">
+      <!-- Step 1 -->
+      <div class="form-card" id="form-step-1">
+        <h2>Personal Information</h2>
+        <p>We need your basic details to verify your identity and contact you about your application.</p>
+
+        <div class="form-section-title">Identity</div>
+        <div class="form-row">
+          <div class="form-group"><label>First Name *</label><input type="text" placeholder="John" id="f-fname"></div>
+          <div class="form-group"><label>Last Name *</label><input type="text" placeholder="Smith" id="f-lname"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Date of Birth *</label><input type="date" id="f-dob"></div>
+          <div class="form-group"><label>SSN (last 4 digits) *</label><input type="text" maxlength="4" placeholder="XXXX" id="f-ssn"></div>
+        </div>
+
+        <div class="form-section-title">Contact Details</div>
+        <div class="form-row">
+          <div class="form-group"><label>Email Address *</label><input type="email" placeholder="john@email.com" id="f-email"></div>
+          <div class="form-group"><label>Phone Number *</label><input type="tel" placeholder="(555) 000-0000" id="f-phone"></div>
+        </div>
+        <div class="form-group"><label>Home Address *</label><input type="text" placeholder="123 Main Street, City, State, ZIP" id="f-address"></div>
+        <div class="form-hint">Your information is encrypted and never shared with third parties without your consent.</div>
+
+        <div class="form-actions">
+          <span style="font-size:13px;color:var(--text-muted);">Step 1 of 4</span>
+          <button class="btn-primary" onclick="nextStep(1)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="form-card" id="form-step-2" style="display:none;">
+        <h2>Loan Details</h2>
+        <p>Tell us about the loan you'd like to have reduced. Be as accurate as possible.</p>
+
+        <div class="form-section-title">Lender Information</div>
+        <div class="form-row">
+          <div class="form-group"><label>Lender / Bank Name *</label><input type="text" placeholder="e.g. Wells Fargo, Discover" id="f-lender"></div>
+          <div class="form-group"><label>Loan Type *</label>
+            <select id="f-loantype">
+              <option value="">Select loan type</option>
+              <option>Personal Loan</option>
+              <option>Student Loan (Private)</option>
+              <option>Auto Loan</option>
+              <option>Medical Debt</option>
+              <option>Credit Card Debt</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Loan Account Number</label><input type="text" placeholder="Optional" id="f-acct"></div>
+          <div class="form-group"><label>Loan Origination Date</label><input type="month" id="f-origdate"></div>
+        </div>
+
+        <div class="form-section-title">Balance & Payments</div>
+        <div class="form-row">
+          <div class="form-group"><label>Current Outstanding Balance ($) *</label><input type="number" placeholder="e.g. 100000" id="f-balance"></div>
+          <div class="form-group"><label>Monthly Payment Amount ($) *</label><input type="number" placeholder="e.g. 850" id="f-monthly"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Interest Rate (%)</label><input type="number" placeholder="e.g. 12.5" id="f-rate" step="0.1"></div>
+          <div class="form-group"><label>Months Delinquent</label>
+            <select id="f-delinquent">
+              <option value="">Select</option>
+              <option>0 — Current</option>
+              <option>1–3 months</option>
+              <option>4–6 months</option>
+              <option>7–12 months</option>
+              <option>12+ months</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-navy" onclick="prevStep(2)">← Back</button>
+          <button class="btn-primary" onclick="nextStep(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="form-card" id="form-step-3" style="display:none;">
+        <h2>Financial Information</h2>
+        <p>Help us understand your financial situation so we can determine the best relief option for you.</p>
+
+        <div class="form-section-title">Income</div>
+        <div class="form-row">
+          <div class="form-group"><label>Employment Status *</label>
+            <select id="f-employment">
+              <option value="">Select status</option>
+              <option>Employed Full-Time</option>
+              <option>Employed Part-Time</option>
+              <option>Self-Employed</option>
+              <option>Unemployed</option>
+              <option>Retired</option>
+              <option>On Disability</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Employer / Company Name</label><input type="text" placeholder="If employed" id="f-employer"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Monthly Gross Income ($) *</label><input type="number" placeholder="e.g. 4500" id="f-income"></div>
+          <div class="form-group"><label>Monthly Expenses ($) *</label><input type="number" placeholder="e.g. 3000" id="f-expenses"></div>
+        </div>
+
+        <div class="form-section-title">Hardship</div>
+        <div class="form-group"><label>Primary Reason for Hardship *</label>
+          <select id="f-hardship">
+            <option value="">Select reason</option>
+            <option>Job Loss / Layoff</option>
+            <option>Medical Bills / Illness</option>
+            <option>Divorce / Separation</option>
+            <option>Natural Disaster</option>
+            <option>Death of Co-borrower</option>
+            <option>Reduction in Income</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Describe Your Hardship *</label>
+          <textarea id="f-hardshipdesc" placeholder="Please provide a brief description of your financial hardship. The more detail you provide, the better we can assess your application (min. 50 characters)."></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top:4px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="f-consent" style="width:auto;margin-top:2px;">
+            <span style="font-size:13px;color:var(--text-muted);font-weight:400;">I consent to ReliefPath reviewing my financial information for the purposes of this application and agree to the <span style="color:var(--gold);cursor:pointer;">Terms of Service</span> and <span style="color:var(--gold);cursor:pointer;">Privacy Policy</span>.</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-navy" onclick="prevStep(3)">← Back</button>
+          <button class="btn-primary" onclick="nextStep(3)">Review Application →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 — Review -->
+      <div class="form-card" id="form-step-4" style="display:none;">
+        <h2>Review Your Application</h2>
+        <p>Please review all information carefully before submitting. You can go back to edit any section.</p>
+
+        <div class="review-block">
+          <h4>Personal Information</h4>
+          <div class="review-row"><span class="rl">Full Name</span><span class="rv" id="rv-name">—</span></div>
+          <div class="review-row"><span class="rl">Email</span><span class="rv" id="rv-email">—</span></div>
+          <div class="review-row"><span class="rl">Phone</span><span class="rv" id="rv-phone">—</span></div>
+          <div class="review-row"><span class="rl">Address</span><span class="rv" id="rv-address">—</span></div>
+        </div>
+
+        <div class="review-block">
+          <h4>Loan Details</h4>
+          <div class="review-row"><span class="rl">Lender</span><span class="rv" id="rv-lender">—</span></div>
+          <div class="review-row"><span class="rl">Loan Type</span><span class="rv" id="rv-loantype">—</span></div>
+          <div class="review-row"><span class="rl">Outstanding Balance</span><span class="rv" id="rv-balance">—</span></div>
+          <div class="review-row"><span class="rl">Monthly Payment</span><span class="rv" id="rv-monthly">—</span></div>
+        </div>
+
+        <div class="review-block">
+          <h4>Financial Info</h4>
+          <div class="review-row"><span class="rl">Employment</span><span class="rv" id="rv-employment">—</span></div>
+          <div class="review-row"><span class="rl">Monthly Income</span><span class="rv" id="rv-income">—</span></div>
+          <div class="review-row"><span class="rl">Hardship Reason</span><span class="rv" id="rv-hardship">—</span></div>
+        </div>
+
+        <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">Estimated Relief Amount</div>
+          <div style="font-size:13px;color:var(--text-muted);">Based on your loan balance, you could save approximately <strong id="rv-savings" style="color:var(--success);">—</strong> if approved.</div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-navy" onclick="prevStep(4)">← Edit Application</button>
+          <button class="btn-primary" onclick="submitApplication()" style="background:var(--success);color:white;">Submit Application ✓</button>
+        </div>
+      </div>
+
+      <!-- Step 5 — Create Account (after application submit) -->
+      <div class="form-card" id="form-step-5" style="display:none;">
+        <div class="signup-box">
+          <div style="width:52px;height:52px;border-radius:50%;background:#dcf5e8;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;">✓</div>
+          <h2>Application Received! Create Your Account</h2>
+          <p>Your application has been submitted. Create a username and password to log in anytime and monitor your claim progress in real time.</p>
+          <div class="ref-banner">
+            <div><div class="ref-label">Your Reference Code</div><div class="ref-val" id="ref-code-signup">RP-2024-XXXXX</div></div>
+            <span style="font-size:12px;color:var(--text-muted);">Save this</span>
+          </div>
+          <div class="form-section-title" style="margin-top:0;">Create Your Login</div>
+          <div class="form-group">
+            <label>Choose a Username *</label>
+            <input type="text" placeholder="e.g. john_smith" id="su-username">
+            <div class="form-hint">No spaces. Letters, numbers, and underscores only.</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Password *</label><input type="password" placeholder="Min. 8 characters" id="su-pass"></div>
+            <div class="form-group"><label>Confirm Password *</label><input type="password" placeholder="Repeat password" id="su-pass2"></div>
+          </div>
+          <button class="btn-primary" style="width:100%;padding:14px;" onclick="doSignup()">Create Account & View My Claim →</button>
+          <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-muted);">Already have an account? <span style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="showPage('login')">Sign in</span></div>
+        </div>
+      </div>
+
+      <!-- Step 6 — All done -->
+      <div class="form-card" id="form-step-6" style="display:none;">
+        <div class="success-box">
+          <div class="success-icon">🎉</div>
+          <h2>You're All Set!</h2>
+          <p>Your account has been created and your application is now live in your dashboard. Our team will review your claim within 2–3 business days.</p>
+          <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn-primary" onclick="goToDashboard()">View My Dashboard →</button>
+            <button class="btn-navy" onclick="showPage('landing')">Back to Home</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ LOGIN PAGE ════ -->
+<div class="page" id="page-login">
+  <div class="login-page">
+    <div class="login-wrap">
+      <div class="login-left">
+        <div class="hero-badge" style="margin-bottom:24px;">Secure Portal</div>
+        <h2>Welcome Back</h2>
+        <p>Log in to your ReliefPath account to monitor your application status, upload documents, and communicate with your case manager.</p>
+        <ul class="login-features">
+          <li>Real-time application status updates</li>
+          <li>Secure document upload portal</li>
+          <li>Direct messaging with your case manager</li>
+          <li>Payment plan management</li>
+        </ul>
+      </div>
+      <div class="login-right">
+        <h3>Sign In</h3>
+        <p class="sub">Enter your username and password to access your account</p>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" placeholder="Your username" id="l-username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••" id="l-pass">
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
+          <span class="forgot">Forgot password?</span>
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="doLogin()">Sign In →</button>
+        <div class="login-footer" style="margin-top:28px;">
+          Don't have an account? <span onclick="showPage('apply')">Apply now →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ USER DASHBOARD ════ -->
+<div class="page" id="page-user-dash">
+  <div class="dash-header">
+    <div class="container">
+      <div class="dash-header-inner">
+        <div>
+          <h2>My Application — <span style="color:var(--gold);" id="dash-ref">RP-2024-XXXXX</span></h2>
+          <p id="dash-sub">Loading your application…</p>
+        </div>
+        <div>
+          <span class="badge badge-pending" id="dash-status-badge">Pending Review</span>
+          <button class="btn-outline" style="margin-left:12px;padding:8px 18px;font-size:13px;" onclick="signOut()">← Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="container">
+      <div class="dash-grid">
+        <div>
+          <!-- Status Timeline -->
+          <div class="card">
+            <h3>Application Progress</h3>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot done">✓</div>
+                <div class="tl-content">
+                  <div class="tl-title">Application Submitted</div>
+                  <div class="tl-sub">Your application has been received and logged in our system.</div>
+                  <div class="tl-date">March 14, 2024 · 11:22 AM</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot done">✓</div>
+                <div class="tl-content">
+                  <div class="tl-title">Initial Eligibility Check</div>
+                  <div class="tl-sub">Your basic information passed our automated screening.</div>
+                  <div class="tl-date">March 14, 2024 · 3:08 PM</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot active">⟳</div>
+                <div class="tl-content">
+                  <div class="tl-title">Document Review</div>
+                  <div class="tl-sub">Our case manager is reviewing your submitted documents. <strong style="color:var(--warning);">Action required: 1 document pending.</strong></div>
+                  <div class="tl-date">In progress — Est. 2 business days</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot pending">4</div>
+                <div class="tl-content">
+                  <div class="tl-title">Approval Decision</div>
+                  <div class="tl-sub">Your application will be approved or declined based on your full file.</div>
+                  <div class="tl-date">Pending</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot pending">5</div>
+                <div class="tl-content">
+                  <div class="tl-title">Payment Plan Activated</div>
+                  <div class="tl-sub">Your 50% payment plan will be set up and your lender notified.</div>
+                  <div class="tl-date">Pending</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot pending">6</div>
+                <div class="tl-content">
+                  <div class="tl-title">Debt Cleared</div>
+                  <div class="tl-sub">ReliefPath pays the remaining balance. Your loan is fully resolved.</div>
+                  <div class="tl-date">Pending</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Upload -->
+          <div class="card">
+            <h3>Required Documents</h3>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Please upload the following to expedite your review:</p>
+            <div class="doc-item">
+              <div>
+                <div class="doc-name">Government-issued ID</div>
+                <div style="font-size:12px;color:var(--text-muted);">Driver's license, passport, or state ID</div>
+              </div>
+              <span class="doc-status uploaded">✓ Uploaded</span>
+            </div>
+            <div class="doc-item">
+              <div>
+                <div class="doc-name">Recent Pay Stubs (last 2 months)</div>
+                <div style="font-size:12px;color:var(--text-muted);">Or bank statements if self-employed</div>
+              </div>
+              <span class="doc-status uploaded">✓ Uploaded</span>
+            </div>
+            <div class="doc-item">
+              <div>
+                <div class="doc-name">Loan Statement</div>
+                <div style="font-size:12px;color:var(--text-muted);">Most recent statement from your lender</div>
+              </div>
+              <span class="doc-status needed">⚠ Upload Needed</span>
+            </div>
+            <div class="doc-item">
+              <div>
+                <div class="doc-name">Hardship Letter</div>
+                <div style="font-size:12px;color:var(--text-muted);">A brief letter describing your situation</div>
+              </div>
+              <span class="doc-status uploaded">✓ Uploaded</span>
+            </div>
+            <button class="btn-primary" style="margin-top:18px;font-size:13px;padding:10px 22px;" onclick="notify('Document upload feature is active on the live version.')">Upload Documents</button>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div>
+          <div class="card">
+            <h3>Loan Summary</h3>
+            <div class="summary-item"><span class="sk">Loan Balance</span><span class="sv" id="ds-balance">—</span></div>
+            <div class="summary-item"><span class="sk">Lender</span><span class="sv" id="ds-lender">—</span></div>
+            <div class="summary-item"><span class="sk">Loan Type</span><span class="sv" id="ds-type">—</span></div>
+            <div class="summary-item"><span class="sk">Monthly Payment</span><span class="sv" id="ds-monthly">—</span></div>
+            <div class="summary-item"><span class="sk">Your 50% Share</span><span class="sv" id="ds-share">—</span></div>
+            <div class="summary-item highlight"><span class="sk">You Save</span><span class="sv" id="ds-save">—</span></div>
+          </div>
+
+          <div class="card">
+            <h3>Case Manager</h3>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+              <div style="width:46px;height:46px;border-radius:50%;background:#dceeff;color:#1a4d8c;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;">AT</div>
+              <div>
+                <div style="font-weight:600;font-size:14px;">Angela Torres</div>
+                <div style="font-size:12px;color:var(--text-muted);">Senior Case Manager</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">Angela is assigned to your case and will contact you within 2 business days. You can also reach her directly:</div>
+            <div style="font-size:13px;color:var(--navy);"><strong>📧</strong> angela@reliefpath.com</div>
+            <div style="font-size:13px;color:var(--navy);margin-top:6px;"><strong>📞</strong> (800) 555-7482</div>
+          </div>
+
+          <div class="card" style="background:var(--navy);border-color:transparent;">
+            <h3 style="color:var(--white);">Need Help?</h3>
+            <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:16px;line-height:1.6;">Questions about your application? Our support team is available Mon–Fri, 9am–6pm EST.</p>
+            <button class="btn-primary" style="width:100%;font-size:13px;" onclick="notify('Support chat coming soon on the live version.')">Start Live Chat</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ADMIN DASHBOARD ════ -->
+<div class="page" id="page-admin">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div style="padding:0 20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:16px;">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:white;">Relief<span style="color:var(--gold);">Path</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">Admin Console</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Main</div>
+        <div class="sidebar-item active"><span class="sidebar-icon">▦</span> Dashboard</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Applications in the live version.')"><span class="sidebar-icon">📋</span> Applications</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Approved in the live version.')"><span class="sidebar-icon">✓</span> Approved</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Payments in the live version.')"><span class="sidebar-icon">$</span> Payments</div>
+      </div>
+      <div class="sidebar-section" style="margin-top:16px;">
+        <div class="sidebar-label">Management</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Case Managers in the live version.')"><span class="sidebar-icon">👤</span> Case Managers</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Reports in the live version.')"><span class="sidebar-icon">📊</span> Reports</div>
+        <div class="sidebar-item" onclick="notify('Navigate to Settings in the live version.')"><span class="sidebar-icon">⚙</span> Settings</div>
+      </div>
+    </div>
+
+    <!-- Main Area -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h2>Overview</h2>
+          <div style="font-size:13px;color:var(--text-muted);">Monday, April 6, 2026 &nbsp;·&nbsp; Welcome back, Admin</div>
+        </div>
+        <button class="btn-navy" style="font-size:13px;padding:9px 18px;" onclick="showPage('landing')">← Exit to Site</button>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="m-label">Total Applications</div>
+          <div class="m-val">1,284</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--success);"></span>+48 this week</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Pending Review</div>
+          <div class="m-val" style="color:var(--warning);">247</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--warning);"></span>Avg. 2.1 days wait</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Approved</div>
+          <div class="m-val" style="color:var(--success);">894</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--success);"></span>69.6% approval rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Total Debt Relieved</div>
+          <div class="m-val" style="font-size:26px;">$124M</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--gold);"></span>+$2.4M this month</div>
+        </div>
+      </div>
+
+      <!-- Applications Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Recent Applications</h3>
+          <div class="table-controls">
+            <input class="search-input" type="text" placeholder="Search name, ID, lender…" id="admin-search" oninput="filterTable()">
+            <select class="filter-select" id="admin-filter" onchange="filterTable()">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table id="admin-table">
+            <thead>
+              <tr>
+                <th>Applicant</th>
+                <th>Loan Balance</th>
+                <th>Loan Type</th>
+                <th>Hardship</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Application Detail</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- SUPPORT CHAT -->
+<button class="support-btn" id="support-toggle" onclick="toggleSupport()" title="Chat with Support">💬</button>
+<div class="support-panel" id="support-panel">
+  <div class="support-panel-header">
+    <div>
+      <h4>ReliefPath Support</h4>
+      <span>● Online — Typical reply: &lt;2 min</span>
+    </div>
+    <button class="support-close" onclick="toggleSupport()">✕</button>
+  </div>
+  <div class="support-messages" id="support-msgs">
+    <div class="msg agent">👋 Hi! I'm here to help with your ReliefPath application. What can I assist you with today?</div>
+  </div>
+  <div class="support-input-row">
+    <input type="text" id="support-input" placeholder="Type your message…" onkeydown="if(event.key==='Enter')sendSupportMsg()">
+    <button class="support-send" onclick="sendSupportMsg()">Send</button>
+  </div>
+</div>
+
+<script>
+  // ── STATE ──
+  let currentUser = null; // logged-in user
+  let userApplication = null; // their submitted application
+
+  // ── DATA ──
+  const applications = [
+    { id:'RP-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14', status:'Pending', income:4500, monthly:1200, reliefRate:50, notes:'' },
+    { id:'RP-2024-08291', name:'Sandra Lopez',   email:'sandral@mail.com',     balance:55000,  type:'Auto Loan',     lender:'Capital One',  hardship:'Medical Bills', date:'Mar 11', status:'Approved',    income:5200, monthly:750, reliefRate:50, notes:'Verified hardship docs.' },
+    { id:'RP-2024-08187', name:'DeShawn Parker', email:'deshawn@email.com',    balance:78000,  type:'Personal Loan', lender:'Discover',     hardship:'Divorce',       date:'Mar 07', status:'Pending',     income:3800, monthly:950, reliefRate:50, notes:'' },
+    { id:'RP-2024-08044', name:'Emily Hartman',  email:'emily.h@email.com',    balance:32000,  type:'Medical Debt',  lender:'Navient',      hardship:'Medical Bills', date:'Feb 28', status:'Approved',    income:6100, monthly:480, reliefRate:50, notes:'Expedited — medical case.' },
+    { id:'RP-2024-07991', name:'Carlos Vega',    email:'carlosv@email.com',    balance:15000,  type:'Credit Card',   lender:'Chase',        hardship:'Income Reduction', date:'Feb 25', status:'Rejected', income:2900, monthly:320, reliefRate:0, notes:'Does not meet minimum balance.' },
+    { id:'RP-2024-07834', name:'Patricia Moon',  email:'patricia@email.com',   balance:120000, type:'Personal Loan', lender:'SoFi',         hardship:'Job Loss / Layoff', date:'Feb 20', status:'Approved', income:7200, monthly:1400, reliefRate:50, notes:'' },
+    { id:'RP-2024-07723', name:'Aaron Williams', email:'aaron.w@email.com',    balance:44000,  type:'Auto Loan',     lender:'TD Bank',      hardship:'Divorce',       date:'Feb 16', status:'Under Review', income:4200, monthly:620, reliefRate:50, notes:'' },
+    { id:'RP-2024-07601', name:'Lena Novak',     email:'lena.n@email.com',     balance:67000,  type:'Personal Loan', lender:'Upstart',      hardship:'Medical Bills', date:'Feb 12', status:'Pending',     income:3500, monthly:880, reliefRate:50, notes:'' },
+  ];
+
+  const statusBadge = s => {
+    const cls = s==='Approved'?'badge-approved':s==='Rejected'?'badge-rejected':s==='Under Review'?'badge-review':'badge-pending';
+    return `<span class="badge ${cls}">${s}</span>`;
+  };
+  const fmt = n => '$'+Number(n).toLocaleString();
+
+  // ── ADMIN TABLE ──
+  function renderTable(data) {
+    const tbody = document.getElementById('admin-tbody');
+    tbody.innerHTML = data.map(a => `
+      <tr>
+        <td><div class="applicant-cell"><span class="applicant-name">${a.name}</span><span class="applicant-id">${a.id}</span></div></td>
+        <td><strong>${fmt(a.balance)}</strong></td>
+        <td>${a.type}</td>
+        <td>${a.hardship}</td>
+        <td>${a.date}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View File</button>
+            <button class="btn-xs btn-approve" onclick="changeStatus('${a.id}','Approved')">Approve</button>
+            <button class="btn-xs btn-reject" onclick="changeStatus('${a.id}','Rejected')">Reject</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  function filterTable() {
+    const q = document.getElementById('admin-search').value.toLowerCase();
+    const f = document.getElementById('admin-filter').value;
+    const filtered = applications.filter(a =>
+      (!f || a.status===f) &&
+      (!q || a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q) || a.lender.toLowerCase().includes(q))
+    );
+    renderTable(filtered);
+  }
+
+  function viewApp(id) {
+    const a = applications.find(x=>x.id===id);
+    const relief = a.reliefRate||50;
+    const clientPays = Math.round(a.balance * (1 - relief/100));
+    const weCover = a.balance - clientPays;
+    document.getElementById('modal-title').textContent = `Full Application — ${a.id}`;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="review-block"><h4>Applicant</h4>
+          <div class="review-row"><span class="rl">Name</span><span class="rv">${a.name}</span></div>
+          <div class="review-row"><span class="rl">Email</span><span class="rv">${a.email}</span></div>
+          <div class="review-row"><span class="rl">Monthly Income</span><span class="rv">${fmt(a.income)}</span></div>
+          <div class="review-row"><span class="rl">Hardship</span><span class="rv">${a.hardship}</span></div>
+        </div>
+        <div class="review-block"><h4>Loan Details</h4>
+          <div class="review-row"><span class="rl">Type</span><span class="rv">${a.type}</span></div>
+          <div class="review-row"><span class="rl">Lender</span><span class="rv">${a.lender}</span></div>
+          <div class="review-row"><span class="rl">Balance</span><span class="rv">${fmt(a.balance)}</span></div>
+          <div class="review-row"><span class="rl">Monthly Pmt</span><span class="rv">${fmt(a.monthly)}/mo</span></div>
+          <div class="review-row"><span class="rl">Submitted</span><span class="rv">${a.date}, 2024</span></div>
+        </div>
+      </div>
+
+      <div class="review-block" style="margin-bottom:16px;">
+        <h4>Current Status</h4>
+        <div class="review-row"><span class="rl">Status</span><span class="rv">${statusBadge(a.status)}</span></div>
+        <div class="review-row"><span class="rl">Relief Rate</span><span class="rv" style="color:var(--success);font-weight:700;">${relief}% relief</span></div>
+        <div class="review-row"><span class="rl">Client Pays</span><span class="rv">${fmt(clientPays)}</span></div>
+        <div class="review-row"><span class="rl">We Cover</span><span class="rv">${fmt(weCover)}</span></div>
+      </div>
+
+      <div class="review-block" style="margin-bottom:20px;">
+        <h4>Admin Controls</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:12px;">Relief Rate (%)</label>
+            <input type="number" id="modal-rate" value="${relief}" min="0" max="100" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:12px;">New Status</label>
+            <select id="modal-status" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;background:white;">
+              <option ${a.status==='Pending'?'selected':''}>Pending</option>
+              <option ${a.status==='Under Review'?'selected':''}>Under Review</option>
+              <option ${a.status==='Approved'?'selected':''}>Approved</option>
+              <option ${a.status==='Rejected'?'selected':''}>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label style="font-size:12px;">Admin Notes</label>
+          <textarea id="modal-notes" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;resize:vertical;min-height:72px;">${a.notes||''}</textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn-xs btn-view" style="padding:10px 18px;font-size:13px;" onclick="closeModal()">Cancel</button>
+        <button class="btn-xs btn-approve" style="padding:10px 20px;font-size:13px;" onclick="saveAdminDecision('${a.id}')">Save Decision ✓</button>
+      </div>`;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function saveAdminDecision(id) {
+    const a = applications.find(x=>x.id===id);
+    a.status = document.getElementById('modal-status').value;
+    a.reliefRate = parseInt(document.getElementById('modal-rate').value)||50;
+    a.notes = document.getElementById('modal-notes').value;
+    filterTable();
+    closeModal();
+    notify(`${a.name} — ${a.status} at ${a.reliefRate}% relief rate.`, a.status==='Approved'?'success':'error');
+  }
+
+  function changeStatus(id, status) {
+    const a = applications.find(x=>x.id===id);
+    a.status = status;
+    filterTable();
+    notify(`${a.name} marked as ${status}.`, status==='Approved'?'success':'error');
+  }
+
+  function closeModal(e) {
+    if (!e || e.target===document.getElementById('modal-overlay'))
+      document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  // ── NAVIGATION ──
+  const pages = ['landing','apply','login','user-dash','admin'];
+  const navMap = { landing:'nav-home', apply:'nav-apply', login:'nav-login' };
+
+  function showPage(p) {
+    pages.forEach(id => {
+      document.getElementById('page-'+id).classList.toggle('active', id===p);
+    });
+    Object.keys(navMap).forEach(k => {
+      document.getElementById(navMap[k])?.classList.toggle('active', k===p);
+    });
+    // Update URL hash for admin, clear for others
+    if(p === 'admin') window.location.hash = '/admin';
+    else if(window.location.hash === '#/admin') history.pushState('','',window.location.pathname);
+    window.scrollTo(0,0);
+  }
+
+  // Check hash on load — if #/admin, go straight to admin
+  window.addEventListener('load', () => {
+    if(window.location.hash === '#/admin') showPage('admin');
+  });
+  window.addEventListener('hashchange', () => {
+    if(window.location.hash === '#/admin') showPage('admin');
+  });
+
+  // ── FORM STEPS ──
+  let currentStep = 1;
+
+  function nextStep(step) {
+    if (step===3 && !document.getElementById('f-consent').checked) {
+      notify('Please accept the Terms of Service to continue.','error'); return;
+    }
+    if (step===3) buildReview();
+    document.getElementById('form-step-'+step).style.display='none';
+    document.getElementById('form-step-'+(step+1)).style.display='block';
+    updateProgress(step+1);
+    window.scrollTo(0,120);
+    currentStep = step+1;
+  }
+
+  function prevStep(step) {
+    document.getElementById('form-step-'+step).style.display='none';
+    document.getElementById('form-step-'+(step-1)).style.display='block';
+    updateProgress(step-1);
+    window.scrollTo(0,120);
+    currentStep = step-1;
+  }
+
+  function updateProgress(active) {
+    for(let i=1;i<=4;i++){
+      const ps=document.getElementById('ps-'+i);
+      const sc=document.getElementById('sc-'+i);
+      ps.classList.toggle('active',i===active);
+      ps.classList.toggle('done',i<active);
+      sc.textContent = i<active ? '✓' : i;
+    }
+  }
+
+  function buildReview() {
+    const fname = document.getElementById('f-fname').value||'—';
+    const lname = document.getElementById('f-lname').value||'—';
+    document.getElementById('rv-name').textContent = fname+' '+lname;
+    document.getElementById('rv-email').textContent = document.getElementById('f-email').value||'—';
+    document.getElementById('rv-phone').textContent = document.getElementById('f-phone').value||'—';
+    document.getElementById('rv-address').textContent = document.getElementById('f-address').value||'—';
+    document.getElementById('rv-lender').textContent = document.getElementById('f-lender').value||'—';
+    document.getElementById('rv-loantype').textContent = document.getElementById('f-loantype').value||'—';
+    const bal = parseFloat(document.getElementById('f-balance').value)||0;
+    document.getElementById('rv-balance').textContent = bal?'$'+bal.toLocaleString():'—';
+    const monthly = parseFloat(document.getElementById('f-monthly').value)||0;
+    document.getElementById('rv-monthly').textContent = monthly?'$'+monthly.toLocaleString()+'/mo':'—';
+    document.getElementById('rv-employment').textContent = document.getElementById('f-employment').value||'—';
+    const inc = parseFloat(document.getElementById('f-income').value)||0;
+    document.getElementById('rv-income').textContent = inc?'$'+inc.toLocaleString()+'/mo':'—';
+    document.getElementById('rv-hardship').textContent = document.getElementById('f-hardship').value||'—';
+    document.getElementById('rv-savings').textContent = bal?'$'+(bal/2).toLocaleString():'up to 50% of your loan';
+  }
+
+  function submitApplication() {
+    const code = 'RP-'+new Date().getFullYear()+'-'+Math.floor(10000+Math.random()*90000);
+    const email = document.getElementById('f-email').value;
+    const fname = document.getElementById('f-fname').value;
+    const lname = document.getElementById('f-lname').value;
+    const bal = parseFloat(document.getElementById('f-balance').value)||0;
+    userApplication = {
+      id: code, name: fname+' '+lname, email: email, balance: bal,
+      type: document.getElementById('f-loantype').value||'Personal Loan',
+      lender: document.getElementById('f-lender').value||'—',
+      hardship: document.getElementById('f-hardship').value||'—',
+      monthly: parseFloat(document.getElementById('f-monthly').value)||0,
+      income: parseFloat(document.getElementById('f-income').value)||0,
+      status: 'Pending',
+      date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+      reliefRate: 50, notes: '', username: '', password: ''
+    };
+    document.getElementById('ref-code-signup').textContent = code;
+    for(let i=1;i<=4;i++) document.getElementById('form-step-'+i).style.display='none';
+    document.getElementById('form-step-5').style.display='block';
+    window.scrollTo(0,120);
+    notify('Application submitted! Now create your account.','success');
+  }
+
+  function doSignup() {
+    const username = document.getElementById('su-username').value.trim();
+    const pass = document.getElementById('su-pass').value;
+    const pass2 = document.getElementById('su-pass2').value;
+    if(!username){ notify('Please choose a username.','error'); return; }
+    if(/\s/.test(username)){ notify('Username cannot contain spaces.','error'); return; }
+    if(!pass || pass.length < 8){ notify('Password must be at least 8 characters.','error'); return; }
+    if(pass !== pass2){ notify('Passwords do not match.','error'); return; }
+    currentUser = { name: userApplication.name, email: userApplication.email, username };
+    userApplication.username = username;
+    userApplication.password = pass;
+    applications.unshift({...userApplication});
+    document.getElementById('form-step-5').style.display='none';
+    document.getElementById('form-step-6').style.display='block';
+    window.scrollTo(0,120);
+    notify('Account created! Username: '+username,'success');
+  }
+
+  function goToDashboard() {
+    populateDashboard();
+    showPage('user-dash');
+    // Reset form for next use
+    currentStep = 1;
+    for(let i=1;i<=6;i++){
+      const el = document.getElementById('form-step-'+i);
+      if(el) el.style.display = i===1?'block':'none';
+    }
+    updateProgress(1);
+  }
+
+  function populateDashboard() {
+    const app = userApplication || applications[0];
+    if(!app) return;
+    const bal = app.balance;
+    const share = Math.round(bal * 0.5);
+    document.getElementById('dash-ref').textContent = app.id;
+    document.getElementById('dash-sub').textContent = `Submitted ${app.date} · Loan: ${fmt(bal)} ${app.type}`;
+    const badge = document.getElementById('dash-status-badge');
+    badge.textContent = app.status;
+    badge.className = 'badge ' + (app.status==='Approved'?'badge-approved':app.status==='Rejected'?'badge-rejected':app.status==='Under Review'?'badge-review':'badge-pending');
+    document.getElementById('ds-balance').textContent = fmt(bal);
+    document.getElementById('ds-lender').textContent = app.lender;
+    document.getElementById('ds-type').textContent = app.type;
+    document.getElementById('ds-monthly').textContent = fmt(app.monthly)+'/mo';
+    document.getElementById('ds-share').textContent = fmt(share);
+    document.getElementById('ds-save').textContent = fmt(share);
+  }
+
+  function signOut() {
+    currentUser = null;
+    showPage('landing');
+  }
+
+  // ── LOGIN ──
+  function doLogin() {
+    const u = document.getElementById('l-username').value.trim();
+    const p = document.getElementById('l-pass').value;
+    if(!u||!p){ notify('Please enter your username and password.','error'); return; }
+    notify('Signing in…');
+    setTimeout(()=>{
+      const found = applications.find(a => a.username === u && a.password === p);
+      if(found){
+        userApplication = found;
+        currentUser = { name: found.name, email: found.email, username: u };
+      } else {
+        // Demo fallback
+        currentUser = { name: 'Demo User', username: u };
+        userApplication = applications[0];
+      }
+      populateDashboard();
+      showPage('user-dash');
+    }, 900);
+  }
+
+  // ── SUPPORT CHAT ──
+  function toggleSupport() {
+    const panel = document.getElementById('support-panel');
+    panel.classList.toggle('open');
+  }
+
+  const agentReplies = [
+    "Thanks for reaching out! Can you share your application reference code so I can look into this for you?",
+    "I understand your concern. Our team is reviewing your application and will update you within 2 business days.",
+    "Great question! Once approved, you'll receive an email with your payment plan details within 24 hours.",
+    "I can see your application is in our queue. Everything looks good so far — no additional documents are needed at this time.",
+    "Is there anything else I can help you with today?"
+  ];
+  let replyIdx = 0;
+
+  function sendSupportMsg() {
+    const input = document.getElementById('support-input');
+    const msgs = document.getElementById('support-msgs');
+    const text = input.value.trim();
+    if(!text) return;
+    msgs.innerHTML += `<div class="msg user">${text}</div>`;
+    input.value = '';
+    msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(()=>{
+      msgs.innerHTML += `<div class="msg agent">${agentReplies[replyIdx % agentReplies.length]}</div>`;
+      replyIdx++;
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1000);
+  }
+
+  // ── NOTIFY ──
+  function notify(msg, type='') {
+    const n=document.getElementById('notif');
+    n.textContent=msg;
+    n.className='notif show'+(type?' '+type:'');
+    clearTimeout(n._t);
+    n._t=setTimeout(()=>n.classList.remove('show'),3200);
+  }
+
+  // ── INIT ──
+  renderTable(applications);
+</script>
+</body>
+</html>
