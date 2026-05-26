@@ -916,6 +916,19 @@
           </div>
         </div>
 
+        <!-- Additional loans -->
+        <div id="extra-loans"></div>
+
+        <button type="button" onclick="addLoan()" style="
+          display:inline-flex;align-items:center;gap:8px;
+          background:transparent;border:2px solid var(--gold);
+          color:var(--gold);padding:10px 22px;border-radius:var(--radius);
+          font-size:14px;font-weight:600;cursor:pointer;
+          font-family:'DM Sans',sans-serif;margin-bottom:8px;
+          transition:background .2s,color .2s;">
+          + Add Another Loan
+        </button>
+
         <div class="form-actions">
           <button class="btn-navy" onclick="prevStep(2)">← Back</button>
           <button class="btn-primary" onclick="nextStep(2)">Continue →</button>
@@ -1499,6 +1512,51 @@
     n.className='notif show'+(type?' '+type:'');
     clearTimeout(n._t);
     n._t=setTimeout(()=>n.classList.remove('show'),3200);
+  }
+
+  // ── MULTIPLE LOANS ──
+  let loanCount = 0;
+  function addLoan() {
+    loanCount++;
+    const id = loanCount;
+    const block = document.createElement('div');
+    block.id = 'extra-loan-' + id;
+    block.style.cssText = 'border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:20px;position:relative;';
+    block.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div class="form-section-title" style="margin:0;border:none;padding:0;">Additional Loan #${id}</div>
+        <button type="button" onclick="document.getElementById('extra-loan-${id}').remove()" style="background:none;border:1px solid var(--gray-200);border-radius:var(--radius);padding:4px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lender / Bank Name</label>
+          <input type="text" placeholder="e.g. Wells Fargo, Discover">
+        </div>
+        <div class="form-group">
+          <label>Loan Type</label>
+          <select>
+            <option value="">Select loan type</option>
+            <option>Personal Loan</option>
+            <option>Student Loan (Private)</option>
+            <option>Auto Loan</option>
+            <option>Medical Debt</option>
+            <option>Credit Card Debt</option>
+            <option>Mortgage Loan</option>
+            <option>Business Loan</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Current Outstanding Balance ($)</label>
+          <input type="number" placeholder="e.g. 100000">
+        </div>
+        <div class="form-group">
+          <label>Monthly Payment Amount ($)</label>
+          <input type="number" placeholder="e.g. 850">
+        </div>
+      </div>`;
+    document.getElementById('extra-loans').appendChild(block);
   }
 
   // ── INIT ──
