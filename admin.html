@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HappyMovement USA — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0b1f3a; --navy-light: #132848; --navy-dark: #07142a;
+    --gold: #c9a84c; --gold-light: #e2c97e; --gold-pale: #f5eed8;
+    --white: #ffffff; --off-white: #f8f6f1;
+    --gray-100: #f0ede6; --gray-200: #e0ddd6; --gray-400: #9a9690; --gray-600: #5e5b56;
+    --text: #0b1f3a; --text-muted: #6b6860;
+    --success: #1a7a4a; --warning: #b57d0f; --danger: #a0311f;
+    --radius: 6px; --radius-lg: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--off-white); font-size:15px; line-height:1.6; }
+  h1,h2,h3,h4 { font-family:'Playfair Display',serif; }
+
+  /* LOGIN */
+  .login-wrap {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--navy);
+  }
+  .login-box {
+    background:var(--white); border-radius:var(--radius-lg);
+    padding:48px; width:400px; box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  }
+  .login-logo { font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); margin-bottom:8px; }
+  .login-logo span { color:var(--gold); }
+  .login-box h2 { font-size:24px; margin-bottom:6px; }
+  .login-box p { color:var(--text-muted); font-size:14px; margin-bottom:28px; }
+  .form-group { margin-bottom:18px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:7px; }
+  .form-group input {
+    width:100%; padding:11px 14px; border:1.5px solid var(--gray-200);
+    border-radius:var(--radius); font-size:14px; font-family:'DM Sans',sans-serif;
+    color:var(--text); outline:none; transition:border-color .2s;
+  }
+  .form-group input:focus { border-color:var(--gold); }
+  .btn-primary {
+    width:100%; background:var(--gold); color:var(--navy-dark); border:none;
+    padding:13px; border-radius:var(--radius); font-size:15px; font-weight:600;
+    cursor:pointer; font-family:'DM Sans',sans-serif;
+  }
+  .btn-primary:hover { background:var(--gold-light); }
+  .login-error { color:var(--danger); font-size:13px; margin-top:12px; text-align:center; display:none; }
+
+  /* ADMIN LAYOUT */
+  .admin-wrap { display:none; min-height:100vh; }
+  .admin-layout { display:flex; min-height:100vh; }
+  .admin-sidebar {
+    width:230px; background:var(--navy); flex-shrink:0;
+    padding:28px 0; border-right:1px solid rgba(201,168,76,0.15);
+    display:flex; flex-direction:column;
+  }
+  .sidebar-logo {
+    padding:0 24px 24px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:16px;
+    font-family:'Playfair Display',serif; font-size:16px; color:var(--white);
+  }
+  .sidebar-logo span { color:var(--gold); }
+  .sidebar-logo small { display:block; font-size:11px; color:rgba(255,255,255,0.4); font-family:'DM Sans',sans-serif; margin-top:2px; }
+  .sidebar-label { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:10px 24px 6px; }
+  .sidebar-item {
+    display:flex; align-items:center; gap:11px; padding:10px 20px;
+    margin:0 8px; border-radius:var(--radius);
+    color:rgba(255,255,255,0.65); font-size:13.5px; font-weight:500;
+    cursor:pointer; transition:background .15s, color .15s;
+  }
+  .sidebar-item:hover { background:rgba(255,255,255,0.06); color:var(--white); }
+  .sidebar-item.active { background:rgba(201,168,76,0.15); color:var(--gold); }
+  .sidebar-icon { font-size:15px; width:20px; text-align:center; }
+  .sidebar-bottom { margin-top:auto; padding:16px; border-top:1px solid rgba(255,255,255,0.08); }
+  .exit-btn {
+    width:100%; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7);
+    border:1px solid rgba(255,255,255,0.15); padding:9px; border-radius:var(--radius);
+    font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif;
+  }
+  .exit-btn:hover { background:rgba(255,255,255,0.14); color:var(--white); }
+
+  /* MAIN */
+  .admin-main { flex:1; background:var(--off-white); padding:32px 40px; overflow:auto; }
+  .admin-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+  .admin-topbar h2 { font-size:24px; color:var(--navy); }
+  .admin-topbar p { font-size:13px; color:var(--text-muted); margin-top:2px; }
+  .topbar-right { display:flex; align-items:center; gap:12px; }
+  .admin-avatar {
+    width:36px; height:36px; border-radius:50%; background:var(--gold);
+    color:var(--navy-dark); display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:13px;
+  }
+
+  /* METRICS */
+  .metric-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px; }
+  .metric-card {
+    background:var(--white); border:1px solid var(--gray-200);
+    border-radius:var(--radius-lg); padding:22px 24px;
+  }
+  .m-label { font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+  .m-val { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--navy); line-height:1; }
+  .m-sub { font-size:12px; color:var(--text-muted); margin-top:6px; }
+  .m-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+
+  /* TABLE */
+  .table-card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius-lg); overflow:hidden; }
+  .table-header { padding:18px 24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-200); }
+  .table-header h3 { font-size:16px; color:var(--navy); }
+  .table-controls { display:flex; gap:12px; }
+  .search-input {
+    padding:8px 14px; border:1.5px solid var(--gray-200); border-radius:var(--radius);
+    font-size:13px; font-family:'DM Sans',sans-serif; outline:none; width:220px; color:var(--text);
+  }
+  .search-input:focus { border-color:var(--gold); }
+  .filter-select {
+    padding:8px 12px; border:1.5px solid var(--gray-200); border-radius:var(--radius);
+    font-size:13px; font-family:'DM Sans',sans-serif; outline:none; color:var(--text); background:white;
+  }
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    padding:12px 20px; text-align:left; font-size:11px; font-weight:700;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);
+    background:var(--off-white); border-bottom:1px solid var(--gray-200);
+  }
+  tbody td { padding:15px 20px; border-bottom:1px solid var(--gray-100); font-size:13.5px; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:var(--off-white); }
+  .applicant-name { font-weight:600; color:var(--navy); }
+  .applicant-id { font-size:12px; color:var(--text-muted); font-family:monospace; }
+  .badge { padding:4px 12px; border-radius:99px; font-size:12px; font-weight:600; }
+  .badge-pending { background:#fff4d6; color:#8a5c00; }
+  .badge-review { background:#dceeff; color:#1a4d8c; }
+  .badge-approved { background:#dcf5e8; color:#1a5c36; }
+  .badge-rejected { background:#fde8e4; color:#8c2419; }
+  .action-btns { display:flex; gap:6px; }
+  .btn-xs {
+    padding:5px 12px; border-radius:var(--radius); font-size:12px; font-weight:600;
+    cursor:pointer; border:none; font-family:'DM Sans',sans-serif;
+  }
+  .btn-approve { background:#dcf5e8; color:var(--success); }
+  .btn-reject { background:#fde8e4; color:var(--danger); }
+  .btn-view { background:var(--gray-100); color:var(--navy); }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    display:flex; align-items:center; justify-content:center;
+    z-index:200; opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal {
+    background:var(--white); border-radius:var(--radius-lg);
+    width:700px; max-width:95vw; max-height:88vh;
+    overflow-y:auto; padding:40px 44px;
+    transform:translateY(20px); transition:transform .25s;
+  }
+  .modal-overlay.open .modal { transform:translateY(0); }
+  .modal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
+  .modal-header h3 { font-size:22px; color:var(--navy); }
+  .modal-close { background:none; border:none; font-size:20px; cursor:pointer; color:var(--gray-400); }
+  .review-block { background:var(--off-white); border-radius:var(--radius); padding:20px 24px; margin-bottom:16px; }
+  .review-block h4 { font-size:14px; font-weight:600; color:var(--navy); margin-bottom:12px; }
+  .review-row { display:flex; justify-content:space-between; padding:5px 0; font-size:14px; }
+  .review-row .rl { color:var(--text-muted); }
+  .review-row .rv { font-weight:500; color:var(--navy); }
+  .modal-input {
+    width:100%; padding:9px 12px; border:1.5px solid var(--gray-200);
+    border-radius:var(--radius); font-size:14px; font-family:'DM Sans',sans-serif;
+    color:var(--text); outline:none;
+  }
+  .modal-input:focus { border-color:var(--gold); }
+  .modal-label { font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; display:block; }
+  .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px; }
+  .btn-save {
+    background:var(--success); color:white; border:none; padding:11px 24px;
+    border-radius:var(--radius); font-size:14px; font-weight:600;
+    cursor:pointer; font-family:'DM Sans',sans-serif;
+  }
+  .btn-cancel {
+    background:var(--gray-100); color:var(--navy); border:none; padding:11px 20px;
+    border-radius:var(--radius); font-size:14px; cursor:pointer; font-family:'DM Sans',sans-serif;
+  }
+
+  /* NOTIFICATION */
+  .notif {
+    position:fixed; bottom:28px; right:28px; background:var(--navy); color:var(--white);
+    padding:14px 22px; border-radius:var(--radius-lg); font-size:14px;
+    border-left:4px solid var(--gold); opacity:0; transform:translateY(10px);
+    transition:opacity .3s, transform .3s; pointer-events:none; z-index:300;
+  }
+  .notif.show { opacity:1; transform:translateY(0); }
+  .notif.success { border-left-color:var(--success); }
+  .notif.error { border-left-color:var(--danger); }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">Happy<span>Movement</span> USA</div>
+    <h2>Admin Login</h2>
+    <p>Sign in to access the admin dashboard</p>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="admin-user" placeholder="admin" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="admin-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <button class="btn-primary" onclick="doAdminLogin()">Sign In to Dashboard</button>
+    <div class="login-error" id="login-error">Invalid username or password.</div>
+    <div style="margin-top:20px;text-align:center;">
+      <a href="index.html" style="font-size:13px;color:var(--text-muted);">← Back to site</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN DASHBOARD ═══ -->
+<div class="admin-wrap" id="admin-wrap">
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="sidebar-logo">
+        Happy<span>Movement</span> USA
+        <small>Admin Console</small>
+      </div>
+      <div class="sidebar-label">Main</div>
+      <div class="sidebar-item active" onclick="notify('You are on the Dashboard')"><span class="sidebar-icon">▦</span> Dashboard</div>
+      <div class="sidebar-item" onclick="filterByStatus('')"><span class="sidebar-icon">📋</span> All Applications</div>
+      <div class="sidebar-item" onclick="filterByStatus('Approved')"><span class="sidebar-icon">✓</span> Approved</div>
+      <div class="sidebar-item" onclick="filterByStatus('Pending')"><span class="sidebar-icon">⏳</span> Pending</div>
+      <div class="sidebar-item" onclick="filterByStatus('Rejected')"><span class="sidebar-icon">✗</span> Rejected</div>
+      <div class="sidebar-label" style="margin-top:12px;">Management</div>
+      <div class="sidebar-item" onclick="notify('Reports coming soon.')"><span class="sidebar-icon">📊</span> Reports</div>
+      <div class="sidebar-item" onclick="notify('Settings coming soon.')"><span class="sidebar-icon">⚙</span> Settings</div>
+      <div class="sidebar-bottom">
+        <button class="exit-btn" onclick="window.location.href='index.html'">← Exit to Site</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <h2>Overview</h2>
+          <p id="topbar-date">Loading…</p>
+        </div>
+        <div class="topbar-right">
+          <span style="font-size:13px;color:var(--text-muted);">Welcome, <strong>Admin</strong></span>
+          <div class="admin-avatar">A</div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="m-label">Total Applications</div>
+          <div class="m-val" id="met-total">0</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--success);"></span>All time</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Pending Review</div>
+          <div class="m-val" id="met-pending" style="color:var(--warning);">0</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--warning);"></span>Needs action</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Approved</div>
+          <div class="m-val" id="met-approved" style="color:var(--success);">0</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--success);"></span>Relief granted</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Total Debt Reviewed</div>
+          <div class="m-val" id="met-debt" style="font-size:26px;">$0</div>
+          <div class="m-sub"><span class="m-dot" style="background:var(--gold);"></span>Combined balances</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Applications</h3>
+          <div class="table-controls">
+            <input class="search-input" type="text" placeholder="Search name, ID, lender…" id="search-input" oninput="renderTable()">
+            <select class="filter-select" id="filter-status" onchange="renderTable()">
+              <option value="">All Statuses</option>
+              <option>Pending</option>
+              <option>Under Review</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Applicant</th>
+                <th>Loan Balance</th>
+                <th>Loan Type</th>
+                <th>Hardship</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Application Detail</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ── DATA ──
+  const applications = [
+    { id:'HM-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14, 2024', status:'Pending', income:4500, monthly:1200, reliefRate:50, notes:'' },
+    { id:'HM-2024-08291', name:'Sandra Lopez', email:'sandral@mail.com', balance:55000, type:'Auto Loan', lender:'Capital One', hardship:'Medical Bills', date:'Mar 11, 2024', status:'Approved', income:5200, monthly:750, reliefRate:50, notes:'Verified hardship docs.' },
+    { id:'HM-2024-08187', name:'DeShawn Parker', email:'deshawn@email.com', balance:78000, type:'Personal Loan', lender:'Discover', hardship:'Divorce', date:'Mar 07, 2024', status:'Pending', income:3800, monthly:950, reliefRate:50, notes:'' },
+    { id:'HM-2024-08044', name:'Emily Hartman', email:'emily.h@email.com', balance:32000, type:'Medical Debt', lender:'Navient', hardship:'Medical Bills', date:'Feb 28, 2024', status:'Approved', income:6100, monthly:480, reliefRate:50, notes:'Expedited — medical case.' },
+    { id:'HM-2024-07991', name:'Carlos Vega', email:'carlosv@email.com', balance:15000, type:'Credit Card', lender:'Chase', hardship:'Income Reduction', date:'Feb 25, 2024', status:'Rejected', income:2900, monthly:320, reliefRate:0, notes:'Does not meet minimum balance.' },
+    { id:'HM-2024-07834', name:'Patricia Moon', email:'patricia@email.com', balance:120000, type:'Mortgage Loan', lender:'SoFi', hardship:'Job Loss / Layoff', date:'Feb 20, 2024', status:'Approved', income:7200, monthly:1400, reliefRate:50, notes:'' },
+    { id:'HM-2024-07723', name:'Aaron Williams', email:'aaron.w@email.com', balance:44000, type:'Auto Loan', lender:'TD Bank', hardship:'Divorce', date:'Feb 16, 2024', status:'Under Review', income:4200, monthly:620, reliefRate:50, notes:'' },
+    { id:'HM-2024-07601', name:'Lena Novak', email:'lena.n@email.com', balance:67000, type:'Business Loan', lender:'Upstart', hardship:'Medical Bills', date:'Feb 12, 2024', status:'Pending', income:3500, monthly:880, reliefRate:50, notes:'' },
+  ];
+
+  const fmt = n => '$'+Number(n).toLocaleString();
+
+  const statusBadge = s => {
+    const cls = s==='Approved'?'badge-approved':s==='Rejected'?'badge-rejected':s==='Under Review'?'badge-review':'badge-pending';
+    return `<span class="badge ${cls}">${s}</span>`;
+  };
+
+  function updateMetrics() {
+    document.getElementById('met-total').textContent = applications.length;
+    document.getElementById('met-pending').textContent = applications.filter(a=>a.status==='Pending').length;
+    document.getElementById('met-approved').textContent = applications.filter(a=>a.status==='Approved').length;
+    const total = applications.reduce((s,a)=>s+a.balance,0);
+    document.getElementById('met-debt').textContent = total>=1000000?'$'+(total/1000000).toFixed(1)+'M':fmt(total);
+  }
+
+  function renderTable() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const f = document.getElementById('filter-status').value;
+    const filtered = applications.filter(a =>
+      (!f || a.status===f) &&
+      (!q || a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q) || a.lender.toLowerCase().includes(q))
+    );
+    document.getElementById('admin-tbody').innerHTML = filtered.map(a => `
+      <tr>
+        <td><div class="applicant-name">${a.name}</div><div class="applicant-id">${a.id}</div></td>
+        <td><strong>${fmt(a.balance)}</strong></td>
+        <td>${a.type}</td>
+        <td>${a.hardship}</td>
+        <td>${a.date}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View File</button>
+            <button class="btn-xs btn-approve" onclick="quickStatus('${a.id}','Approved')">Approve</button>
+            <button class="btn-xs btn-reject" onclick="quickStatus('${a.id}','Rejected')">Reject</button>
+          </div>
+        </td>
+      </tr>`).join('');
+    updateMetrics();
+  }
+
+  function filterByStatus(s) {
+    document.getElementById('filter-status').value = s;
+    renderTable();
+  }
+
+  function viewApp(id) {
+    const a = applications.find(x=>x.id===id);
+    const relief = a.reliefRate||50;
+    const clientPays = Math.round(a.balance*(1-relief/100));
+    const weCover = a.balance - clientPays;
+    document.getElementById('modal-title').textContent = `Full Application — ${a.id}`;
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-grid">
+        <div class="review-block"><h4>Applicant</h4>
+          <div class="review-row"><span class="rl">Name</span><span class="rv">${a.name}</span></div>
+          <div class="review-row"><span class="rl">Email</span><span class="rv">${a.email}</span></div>
+          <div class="review-row"><span class="rl">Monthly Income</span><span class="rv">${fmt(a.income)}</span></div>
+          <div class="review-row"><span class="rl">Hardship</span><span class="rv">${a.hardship}</span></div>
+        </div>
+        <div class="review-block"><h4>Loan Details</h4>
+          <div class="review-row"><span class="rl">Type</span><span class="rv">${a.type}</span></div>
+          <div class="review-row"><span class="rl">Lender</span><span class="rv">${a.lender}</span></div>
+          <div class="review-row"><span class="rl">Balance</span><span class="rv">${fmt(a.balance)}</span></div>
+          <div class="review-row"><span class="rl">Monthly Pmt</span><span class="rv">${fmt(a.monthly)}/mo</span></div>
+          <div class="review-row"><span class="rl">Submitted</span><span class="rv">${a.date}</span></div>
+        </div>
+      </div>
+      <div class="review-block" style="margin-bottom:16px;">
+        <h4>Relief Breakdown</h4>
+        <div class="review-row"><span class="rl">Current Status</span><span class="rv">${statusBadge(a.status)}</span></div>
+        <div class="review-row"><span class="rl">Relief Rate</span><span class="rv" style="color:var(--success);font-weight:700;">${relief}%</span></div>
+        <div class="review-row"><span class="rl">Client Upfront (5% min)</span><span class="rv">${fmt(Math.round(a.balance*0.05))}</span></div>
+        <div class="review-row"><span class="rl">We Pay Off</span><span class="rv" style="color:var(--success);">${fmt(a.balance)}</span></div>
+        <div class="review-row"><span class="rl">Remaining Installment</span><span class="rv">${fmt(clientPays)} @ 1% interest</span></div>
+      </div>
+      <div class="review-block" style="margin-bottom:16px;">
+        <h4>Admin Decision</h4>
+        <div class="modal-grid">
+          <div>
+            <label class="modal-label">Relief Rate (%)</label>
+            <input type="number" id="modal-rate" class="modal-input" value="${relief}" min="0" max="100">
+          </div>
+          <div>
+            <label class="modal-label">Status</label>
+            <select id="modal-status" class="modal-input">
+              <option ${a.status==='Pending'?'selected':''}>Pending</option>
+              <option ${a.status==='Under Review'?'selected':''}>Under Review</option>
+              <option ${a.status==='Approved'?'selected':''}>Approved</option>
+              <option ${a.status==='Rejected'?'selected':''}>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <label class="modal-label">Admin Notes</label>
+        <textarea id="modal-notes" class="modal-input" style="min-height:72px;resize:vertical;">${a.notes||''}</textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveDecision('${a.id}')">Save Decision ✓</button>
+      </div>`;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function saveDecision(id) {
+    const a = applications.find(x=>x.id===id);
+    a.status = document.getElementById('modal-status').value;
+    a.reliefRate = parseInt(document.getElementById('modal-rate').value)||50;
+    a.notes = document.getElementById('modal-notes').value;
+    renderTable();
+    closeModal();
+    notify(`${a.name} — ${a.status} at ${a.reliefRate}% relief rate.`, a.status==='Approved'?'success':'error');
+  }
+
+  function quickStatus(id, status) {
+    const a = applications.find(x=>x.id===id);
+    a.status = status;
+    renderTable();
+    notify(`${a.name} marked as ${status}.`, status==='Approved'?'success':'error');
+  }
+
+  function closeModal(e) {
+    if(!e || e.target===document.getElementById('modal-overlay'))
+      document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  // ── ADMIN LOGIN ──
+  function doAdminLogin() {
+    const u = document.getElementById('admin-user').value.trim();
+    const p = document.getElementById('admin-pass').value;
+    if(u==='admin' && p==='admin123') {
+      document.getElementById('login-wrap').style.display='none';
+      document.getElementById('admin-wrap').style.display='block';
+      renderTable();
+    } else {
+      document.getElementById('login-error').style.display='block';
+    }
+  }
+
+  // ── NOTIFY ──
+  function notify(msg, type='') {
+    const n=document.getElementById('notif');
+    n.textContent=msg;
+    n.className='notif show'+(type?' '+type:'');
+    clearTimeout(n._t);
+    n._t=setTimeout(()=>n.classList.remove('show'),3200);
+  }
+
+  // ── INIT ──
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+</script>
+</body>
+</html>
