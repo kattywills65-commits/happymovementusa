@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HappyMovement USA — Loan Relief Solutions</title>
+<title>ReliefPath — Loan Relief Solutions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -596,61 +596,7 @@
   .notif.success { border-left-color: var(--success); }
   .notif.error { border-left-color: var(--danger); }
 
-  /* Support chat widget */
-  .support-btn {
-    position: fixed; bottom: 24px; right: 24px; z-index: 200;
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--gold); color: var(--navy-dark);
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; box-shadow: 0 4px 20px rgba(201,168,76,0.4);
-    transition: transform .2s, background .2s;
-  }
-  .support-btn:hover { transform: scale(1.08); background: var(--gold-light); }
-  .support-panel {
-    position: fixed; bottom: 92px; right: 24px; z-index: 200;
-    width: 340px; background: var(--white);
-    border-radius: var(--radius-lg); overflow: hidden;
-    border: 1px solid var(--gray-200);
-    box-shadow: 0 12px 48px rgba(11,31,58,0.18);
-    display: none; flex-direction: column;
-  }
-  .support-panel.open { display: flex; }
-  .support-panel-header {
-    background: var(--navy); padding: 16px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .support-panel-header h4 { color: var(--white); font-size: 15px; }
-  .support-panel-header span { color: rgba(255,255,255,0.5); font-size: 12px; }
-  .support-close { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 16px; }
-  .support-messages { padding: 16px; flex: 1; max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-  .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
-  .msg.agent { background: var(--off-white); color: var(--text); align-self: flex-start; border-bottom-left-radius: 3px; }
-  .msg.user { background: var(--navy); color: white; align-self: flex-end; border-bottom-right-radius: 3px; }
-  .support-input-row { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--gray-200); }
-  .support-input-row input {
-    flex: 1; padding: 9px 12px; border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif;
-    outline: none; color: var(--text);
-  }
-  .support-input-row input:focus { border-color: var(--gold); }
-  .support-send {
-    background: var(--gold); color: var(--navy-dark); border: none;
-    padding: 9px 14px; border-radius: var(--radius); cursor: pointer;
-    font-size: 13px; font-weight: 600;
-  }
-  /* signup card */
-  .signup-box { padding: 40px; }
-  .signup-box h2 { font-size: 24px; margin-bottom: 8px; color: var(--navy); }
-  .signup-box > p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
-  .ref-banner {
-    background: var(--gold-pale); border: 1px solid var(--gold);
-    border-radius: var(--radius); padding: 12px 18px;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 28px;
-  }
-  .ref-banner .ref-label { font-size: 12px; color: var(--text-muted); }
-  .ref-banner .ref-val { font-family: monospace; font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: 0.1em; }
+  /* Animations */
   @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
   .fade-up { animation: fadeUp .5s ease forwards; }
   .delay-1 { animation-delay: .1s; opacity:0; }
@@ -663,11 +609,12 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo" onclick="showPage('landing')">Happy<span>Movement</span> <span style="color:var(--white);font-size:18px;">USA</span></div>
+  <div class="nav-logo" onclick="showPage('landing')">Relief<span>Path</span></div>
   <div class="nav-links">
     <button class="nav-link active" id="nav-home" onclick="showPage('landing')">Home</button>
     <button class="nav-link" id="nav-apply" onclick="showPage('apply')">Apply Now</button>
-    <button class="nav-link" id="nav-login" onclick="showPage('login')">Login</button>
+    <button class="nav-link" id="nav-login" onclick="showPage('login')">Track Status</button>
+    <button class="nav-link" id="nav-admin" onclick="showPage('admin')">Admin</button>
     <button class="nav-cta" onclick="showPage('apply')">Get Relief Today</button>
   </div>
 </nav>
@@ -685,9 +632,9 @@
       <div class="container">
         <div class="hero-badge fade-up">Trusted by 12,000+ Americans</div>
         <h1 class="fade-up delay-1">Reduce Your Loan<br>Balance By Up To<br><span>50%</span></h1>
-        <p class="hero-sub fade-up delay-2">You pay half. We cover the rest — legally and transparently. HappyMovement USA puts struggling borrowers back in control of their financial future.</p>
+        <p class="hero-sub fade-up delay-2">You pay half. We cover the rest — legally and transparently. ReliefPath puts struggling borrowers back in control of their financial future.</p>
         <div class="hero-actions fade-up delay-3">
-          <button class="btn-primary" style="font-size:16px;padding:15px 32px;" onclick="showPage('apply')">Apply Now →</button>
+          <button class="btn-primary" style="font-size:16px;padding:15px 32px;" onclick="showPage('apply')">Start Your Free Assessment →</button>
           <button class="btn-outline" onclick="showPage('login')">Track My Application</button>
         </div>
         <div class="hero-trust fade-up delay-4">
@@ -750,7 +697,7 @@
         <div class="step">
           <div class="step-num">03</div>
           <h3>We Cover the Rest</h3>
-          <p>HappyMovement USA pays the remaining 50% directly to your lender, clearing your debt completely. You're done. No hidden fees.</p>
+          <p>ReliefPath pays the remaining 50% directly to your lender, clearing your debt completely. You're done. No hidden fees.</p>
         </div>
       </div>
     </div>
@@ -792,12 +739,12 @@
         </div>
         <div class="elig-cta-box">
           <h3>See Your Potential Savings</h3>
-          <p>Here's an example of what a typical HappyMovement USA client saves on a $100,000 loan.</p>
+          <p>Here's an example of what a typical ReliefPath client saves on a $100,000 loan.</p>
           <div class="savings-preview">
             <div class="savings-row"><span class="label">Original balance</span><span class="val">$100,000</span></div>
             <div class="savings-row"><span class="label">Your payment (50%)</span><span class="val">$50,000</span></div>
             <hr class="savings-divider">
-            <div class="savings-row highlight"><span class="label">HappyMovement USA covers</span><span class="val">$50,000</span></div>
+            <div class="savings-row highlight"><span class="label">ReliefPath covers</span><span class="val">$50,000</span></div>
             <div class="savings-row highlight"><span class="label">You save</span><span class="val" style="color:#4ade80;">50% — $50,000</span></div>
           </div>
           <button class="btn-primary" style="width:100%;" onclick="showPage('apply')">Check My Eligibility →</button>
@@ -811,11 +758,11 @@
     <div class="container">
       <div class="section-label">Testimonials</div>
       <h2>Real people, real relief</h2>
-      <p class="section-sub">Thousands of Americans have cleared their debt through HappyMovement USA. Here's what they say.</p>
+      <p class="section-sub">Thousands of Americans have cleared their debt through ReliefPath. Here's what they say.</p>
       <div class="testimonials">
         <div class="testimonial">
           <div class="stars">★★★★★</div>
-          <p>"I had $78,000 in personal loan debt after losing my job. HappyMovement USA got me approved in two weeks. I paid $39,000 over 18 months and they cleared the rest. I genuinely can't believe it worked."</p>
+          <p>"I had $78,000 in personal loan debt after losing my job. ReliefPath got me approved in two weeks. I paid $39,000 over 18 months and they cleared the rest. I genuinely can't believe it worked."</p>
           <div class="testimonial-author">
             <div class="author-avatar" style="background:#dcf5e8;color:#1a5c36;">MR</div>
             <div>
@@ -826,7 +773,7 @@
         </div>
         <div class="testimonial">
           <div class="stars">★★★★★</div>
-          <p>"After my divorce, I was drowning in debt. HappyMovement USA's team walked me through every step. Transparent, professional, and they actually delivered on what they promised."</p>
+          <p>"After my divorce, I was drowning in debt. ReliefPath's team walked me through every step. Transparent, professional, and they actually delivered on what they promised."</p>
           <div class="testimonial-author">
             <div class="author-avatar" style="background:#dceeff;color:#1a4d8c;">SL</div>
             <div>
@@ -851,7 +798,7 @@
   </section>
 
   <footer>
-    <div class="logo">Happy<span>Movement</span> USA &nbsp;©2024</div>
+    <div class="logo">Relief<span>Path</span> &nbsp;©2024</div>
     <p>This is a demonstration website. Not legal or financial advice.</p>
     <div class="footer-links">
       <span class="footer-link">Privacy Policy</span>
@@ -1018,7 +965,7 @@
         <div class="form-group" style="margin-top:4px;">
           <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
             <input type="checkbox" id="f-consent" style="width:auto;margin-top:2px;">
-            <span style="font-size:13px;color:var(--text-muted);font-weight:400;">I consent to HappyMovement USA reviewing my financial information for the purposes of this application and agree to the <span style="color:var(--gold);cursor:pointer;">Terms of Service</span> and <span style="color:var(--gold);cursor:pointer;">Privacy Policy</span>.</span>
+            <span style="font-size:13px;color:var(--text-muted);font-weight:400;">I consent to ReliefPath reviewing my financial information for the purposes of this application and agree to the <span style="color:var(--gold);cursor:pointer;">Terms of Service</span> and <span style="color:var(--gold);cursor:pointer;">Privacy Policy</span>.</span>
           </label>
         </div>
 
@@ -1067,39 +1014,18 @@
         </div>
       </div>
 
-      <!-- Step 5 — Create Account (after application submit) -->
+      <!-- Step 5 — Success -->
       <div class="form-card" id="form-step-5" style="display:none;">
-        <div class="signup-box">
-          <div style="width:52px;height:52px;border-radius:50%;background:#dcf5e8;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;">✓</div>
-          <h2>Application Received! Create Your Account</h2>
-          <p>Your application has been submitted. Create a username and password to log in anytime and monitor your claim progress in real time.</p>
-          <div class="ref-banner">
-            <div><div class="ref-label">Your Reference Code</div><div class="ref-val" id="ref-code-signup">RP-2024-XXXXX</div></div>
-            <span style="font-size:12px;color:var(--text-muted);">Save this</span>
-          </div>
-          <div class="form-section-title" style="margin-top:0;">Create Your Login</div>
-          <div class="form-group">
-            <label>Choose a Username *</label>
-            <input type="text" placeholder="e.g. john_smith" id="su-username">
-            <div class="form-hint">No spaces. Letters, numbers, and underscores only.</div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Password *</label><input type="password" placeholder="Min. 8 characters" id="su-pass"></div>
-            <div class="form-group"><label>Confirm Password *</label><input type="password" placeholder="Repeat password" id="su-pass2"></div>
-          </div>
-          <button class="btn-primary" style="width:100%;padding:14px;" onclick="doSignup()">Create Account & View My Claim →</button>
-          <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-muted);">Already have an account? <span style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="showPage('login')">Sign in</span></div>
-        </div>
-      </div>
-
-      <!-- Step 6 — All done -->
-      <div class="form-card" id="form-step-6" style="display:none;">
         <div class="success-box">
-          <div class="success-icon">🎉</div>
-          <h2>You're All Set!</h2>
-          <p>Your account has been created and your application is now live in your dashboard. Our team will review your claim within 2–3 business days.</p>
+          <div class="success-icon">✓</div>
+          <h2>Application Submitted!</h2>
+          <p>Your application has been received and is now under review. Our team will contact you within 2–3 business days.</p>
+          <div class="ref-code" id="ref-code">RP-2024-XXXXX</div>
+          <div style="margin-bottom:20px;">
+            <p style="font-size:13px;color:var(--text-muted);">Save your reference code above. You'll need it to track your application status.</p>
+          </div>
           <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-            <button class="btn-primary" onclick="goToDashboard()">View My Dashboard →</button>
+            <button class="btn-primary" onclick="showPage('login')">Track My Application</button>
             <button class="btn-navy" onclick="showPage('landing')">Back to Home</button>
           </div>
         </div>
@@ -1114,8 +1040,8 @@
     <div class="login-wrap">
       <div class="login-left">
         <div class="hero-badge" style="margin-bottom:24px;">Secure Portal</div>
-        <h2>Welcome Back</h2>
-        <p>Log in to your HappyMovement USA account to monitor your application status, upload documents, and communicate with your case manager.</p>
+        <h2>Track Your Application</h2>
+        <p>Log in to your ReliefPath account to monitor your application status, upload documents, and communicate with your case manager.</p>
         <ul class="login-features">
           <li>Real-time application status updates</li>
           <li>Secure document upload portal</li>
@@ -1124,11 +1050,11 @@
         </ul>
       </div>
       <div class="login-right">
-        <h3>Sign In</h3>
-        <p class="sub">Enter your username and password to access your account</p>
+        <h3>Welcome Back</h3>
+        <p class="sub">Sign in to your ReliefPath account</p>
         <div class="form-group">
-          <label>Username</label>
-          <input type="text" placeholder="Your username" id="l-username">
+          <label>Email Address</label>
+          <input type="email" placeholder="your@email.com" id="l-email">
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -1137,7 +1063,7 @@
         <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
           <span class="forgot">Forgot password?</span>
         </div>
-        <button class="btn-primary" style="width:100%;" onclick="doLogin()">Sign In →</button>
+        <button class="btn-primary" style="width:100%;" onclick="doLogin()">Sign In</button>
         <div class="login-footer" style="margin-top:28px;">
           Don't have an account? <span onclick="showPage('apply')">Apply now →</span>
         </div>
@@ -1152,12 +1078,12 @@
     <div class="container">
       <div class="dash-header-inner">
         <div>
-          <h2>My Application — <span style="color:var(--gold);" id="dash-ref">RP-2024-XXXXX</span></h2>
-          <p id="dash-sub">Loading your application…</p>
+          <h2>My Application — <span style="color:var(--gold);">RP-2024-08342</span></h2>
+          <p>Submitted March 14, 2024 &nbsp;·&nbsp; Loan: $100,000 Personal Loan</p>
         </div>
         <div>
-          <span class="badge badge-pending" id="dash-status-badge">Pending Review</span>
-          <button class="btn-outline" style="margin-left:12px;padding:8px 18px;font-size:13px;" onclick="signOut()">← Sign Out</button>
+          <span class="badge badge-review">Under Review</span>
+          <button class="btn-outline" style="margin-left:12px;padding:8px 18px;font-size:13px;" onclick="showPage('landing')">← Sign Out</button>
         </div>
       </div>
     </div>
@@ -1215,7 +1141,7 @@
                 <div class="tl-dot pending">6</div>
                 <div class="tl-content">
                   <div class="tl-title">Debt Cleared</div>
-                  <div class="tl-sub">HappyMovement USA pays the remaining balance. Your loan is fully resolved.</div>
+                  <div class="tl-sub">ReliefPath pays the remaining balance. Your loan is fully resolved.</div>
                   <div class="tl-date">Pending</div>
                 </div>
               </div>
@@ -1262,12 +1188,12 @@
         <div>
           <div class="card">
             <h3>Loan Summary</h3>
-            <div class="summary-item"><span class="sk">Loan Balance</span><span class="sv" id="ds-balance">—</span></div>
-            <div class="summary-item"><span class="sk">Lender</span><span class="sv" id="ds-lender">—</span></div>
-            <div class="summary-item"><span class="sk">Loan Type</span><span class="sv" id="ds-type">—</span></div>
-            <div class="summary-item"><span class="sk">Monthly Payment</span><span class="sv" id="ds-monthly">—</span></div>
-            <div class="summary-item"><span class="sk">Your 50% Share</span><span class="sv" id="ds-share">—</span></div>
-            <div class="summary-item highlight"><span class="sk">You Save</span><span class="sv" id="ds-save">—</span></div>
+            <div class="summary-item"><span class="sk">Loan Balance</span><span class="sv">$100,000</span></div>
+            <div class="summary-item"><span class="sk">Lender</span><span class="sv">Wells Fargo</span></div>
+            <div class="summary-item"><span class="sk">Loan Type</span><span class="sv">Personal Loan</span></div>
+            <div class="summary-item"><span class="sk">Monthly Payment</span><span class="sv">$1,200/mo</span></div>
+            <div class="summary-item"><span class="sk">Your 50% Share</span><span class="sv">$50,000</span></div>
+            <div class="summary-item highlight"><span class="sk">You Save</span><span class="sv">$50,000</span></div>
           </div>
 
           <div class="card">
@@ -1280,7 +1206,7 @@
               </div>
             </div>
             <div style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">Angela is assigned to your case and will contact you within 2 business days. You can also reach her directly:</div>
-            <div style="font-size:13px;color:var(--navy);"><strong>📧</strong> angela@happymovement-usa.com</div>
+            <div style="font-size:13px;color:var(--navy);"><strong>📧</strong> angela@reliefpath.com</div>
             <div style="font-size:13px;color:var(--navy);margin-top:6px;"><strong>📞</strong> (800) 555-7482</div>
           </div>
 
@@ -1400,49 +1326,25 @@
   </div>
 </div>
 
-<!-- SUPPORT CHAT -->
-<button class="support-btn" id="support-toggle" onclick="toggleSupport()" title="Chat with Support">💬</button>
-<div class="support-panel" id="support-panel">
-  <div class="support-panel-header">
-    <div>
-      <h4>HappyMovement USA Support</h4>
-      <span>● Online — Typical reply: &lt;2 min</span>
-    </div>
-    <button class="support-close" onclick="toggleSupport()">✕</button>
-  </div>
-  <div class="support-messages" id="support-msgs">
-    <div class="msg agent">👋 Hi! I'm here to help with your HappyMovement USA application. What can I assist you with today?</div>
-  </div>
-  <div class="support-input-row">
-    <input type="text" id="support-input" placeholder="Type your message…" onkeydown="if(event.key==='Enter')sendSupportMsg()">
-    <button class="support-send" onclick="sendSupportMsg()">Send</button>
-  </div>
-</div>
-
 <script>
-  // ── STATE ──
-  let currentUser = null; // logged-in user
-  let userApplication = null; // their submitted application
-
   // ── DATA ──
   const applications = [
-    { id:'RP-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14', status:'Pending', income:4500, monthly:1200, reliefRate:50, notes:'' },
-    { id:'RP-2024-08291', name:'Sandra Lopez',   email:'sandral@mail.com',     balance:55000,  type:'Auto Loan',     lender:'Capital One',  hardship:'Medical Bills', date:'Mar 11', status:'Approved',    income:5200, monthly:750, reliefRate:50, notes:'Verified hardship docs.' },
-    { id:'RP-2024-08187', name:'DeShawn Parker', email:'deshawn@email.com',    balance:78000,  type:'Personal Loan', lender:'Discover',     hardship:'Divorce',       date:'Mar 07', status:'Pending',     income:3800, monthly:950, reliefRate:50, notes:'' },
-    { id:'RP-2024-08044', name:'Emily Hartman',  email:'emily.h@email.com',    balance:32000,  type:'Medical Debt',  lender:'Navient',      hardship:'Medical Bills', date:'Feb 28', status:'Approved',    income:6100, monthly:480, reliefRate:50, notes:'Expedited — medical case.' },
-    { id:'RP-2024-07991', name:'Carlos Vega',    email:'carlosv@email.com',    balance:15000,  type:'Credit Card',   lender:'Chase',        hardship:'Income Reduction', date:'Feb 25', status:'Rejected', income:2900, monthly:320, reliefRate:0, notes:'Does not meet minimum balance.' },
-    { id:'RP-2024-07834', name:'Patricia Moon',  email:'patricia@email.com',   balance:120000, type:'Personal Loan', lender:'SoFi',         hardship:'Job Loss / Layoff', date:'Feb 20', status:'Approved', income:7200, monthly:1400, reliefRate:50, notes:'' },
-    { id:'RP-2024-07723', name:'Aaron Williams', email:'aaron.w@email.com',    balance:44000,  type:'Auto Loan',     lender:'TD Bank',      hardship:'Divorce',       date:'Feb 16', status:'Under Review', income:4200, monthly:620, reliefRate:50, notes:'' },
-    { id:'RP-2024-07601', name:'Lena Novak',     email:'lena.n@email.com',     balance:67000,  type:'Personal Loan', lender:'Upstart',      hardship:'Medical Bills', date:'Feb 12', status:'Pending',     income:3500, monthly:880, reliefRate:50, notes:'' },
+    { id:'RP-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14', status:'Under Review', income:4500 },
+    { id:'RP-2024-08291', name:'Sandra Lopez',   email:'sandral@mail.com',     balance:55000,  type:'Auto Loan',     lender:'Capital One',  hardship:'Medical Bills', date:'Mar 11', status:'Approved',    income:5200 },
+    { id:'RP-2024-08187', name:'DeShawn Parker', email:'deshawn@email.com',    balance:78000,  type:'Personal Loan', lender:'Discover',     hardship:'Divorce',       date:'Mar 07', status:'Pending',     income:3800 },
+    { id:'RP-2024-08044', name:'Emily Hartman',  email:'emily.h@email.com',    balance:32000,  type:'Medical Debt',  lender:'Navient',      hardship:'Medical Bills', date:'Feb 28', status:'Approved',    income:6100 },
+    { id:'RP-2024-07991', name:'Carlos Vega',    email:'carlosv@email.com',    balance:15000,  type:'Credit Card',   lender:'Chase',        hardship:'Income Reduction', date:'Feb 25', status:'Rejected', income:2900 },
+    { id:'RP-2024-07834', name:'Patricia Moon',  email:'patricia@email.com',   balance:120000, type:'Personal Loan', lender:'SoFi',         hardship:'Job Loss / Layoff', date:'Feb 20', status:'Approved', income:7200 },
+    { id:'RP-2024-07723', name:'Aaron Williams', email:'aaron.w@email.com',    balance:44000,  type:'Auto Loan',     lender:'TD Bank',      hardship:'Divorce',       date:'Feb 16', status:'Under Review', income:4200 },
+    { id:'RP-2024-07601', name:'Lena Novak',     email:'lena.n@email.com',     balance:67000,  type:'Personal Loan', lender:'Upstart',      hardship:'Medical Bills', date:'Feb 12', status:'Pending',     income:3500 },
   ];
 
   const statusBadge = s => {
     const cls = s==='Approved'?'badge-approved':s==='Rejected'?'badge-rejected':s==='Under Review'?'badge-review':'badge-pending';
     return `<span class="badge ${cls}">${s}</span>`;
   };
-  const fmt = n => '$'+Number(n).toLocaleString();
+  const fmt = n => '$'+n.toLocaleString();
 
-  // ── ADMIN TABLE ──
   function renderTable(data) {
     const tbody = document.getElementById('admin-tbody');
     tbody.innerHTML = data.map(a => `
@@ -1455,7 +1357,7 @@
         <td>${statusBadge(a.status)}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View File</button>
+            <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View</button>
             <button class="btn-xs btn-approve" onclick="changeStatus('${a.id}','Approved')">Approve</button>
             <button class="btn-xs btn-reject" onclick="changeStatus('${a.id}','Rejected')">Reject</button>
           </div>
@@ -1475,73 +1377,33 @@
 
   function viewApp(id) {
     const a = applications.find(x=>x.id===id);
-    const relief = a.reliefRate||50;
-    const clientPays = Math.round(a.balance * (1 - relief/100));
-    const weCover = a.balance - clientPays;
-    document.getElementById('modal-title').textContent = `Full Application — ${a.id}`;
+    document.getElementById('modal-title').textContent = `Application — ${a.id}`;
     document.getElementById('modal-body').innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
         <div class="review-block"><h4>Applicant</h4>
           <div class="review-row"><span class="rl">Name</span><span class="rv">${a.name}</span></div>
           <div class="review-row"><span class="rl">Email</span><span class="rv">${a.email}</span></div>
           <div class="review-row"><span class="rl">Monthly Income</span><span class="rv">${fmt(a.income)}</span></div>
-          <div class="review-row"><span class="rl">Hardship</span><span class="rv">${a.hardship}</span></div>
         </div>
-        <div class="review-block"><h4>Loan Details</h4>
+        <div class="review-block"><h4>Loan</h4>
           <div class="review-row"><span class="rl">Type</span><span class="rv">${a.type}</span></div>
           <div class="review-row"><span class="rl">Lender</span><span class="rv">${a.lender}</span></div>
           <div class="review-row"><span class="rl">Balance</span><span class="rv">${fmt(a.balance)}</span></div>
-          <div class="review-row"><span class="rl">Monthly Pmt</span><span class="rv">${fmt(a.monthly)}/mo</span></div>
-          <div class="review-row"><span class="rl">Submitted</span><span class="rv">${a.date}, 2024</span></div>
         </div>
       </div>
-
-      <div class="review-block" style="margin-bottom:16px;">
-        <h4>Current Status</h4>
+      <div class="review-block"><h4>Hardship</h4>
+        <div class="review-row"><span class="rl">Reason</span><span class="rv">${a.hardship}</span></div>
+        <div class="review-row"><span class="rl">Date Submitted</span><span class="rv">${a.date}, 2024</span></div>
         <div class="review-row"><span class="rl">Status</span><span class="rv">${statusBadge(a.status)}</span></div>
-        <div class="review-row"><span class="rl">Relief Rate</span><span class="rv" style="color:var(--success);font-weight:700;">${relief}% relief</span></div>
-        <div class="review-row"><span class="rl">Client Pays</span><span class="rv">${fmt(clientPays)}</span></div>
-        <div class="review-row"><span class="rl">We Cover</span><span class="rv">${fmt(weCover)}</span></div>
       </div>
-
-      <div class="review-block" style="margin-bottom:20px;">
-        <h4>Admin Controls</h4>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-size:12px;">Relief Rate (%)</label>
-            <input type="number" id="modal-rate" value="${relief}" min="0" max="100" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;">
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-size:12px;">New Status</label>
-            <select id="modal-status" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;background:white;">
-              <option ${a.status==='Pending'?'selected':''}>Pending</option>
-              <option ${a.status==='Under Review'?'selected':''}>Under Review</option>
-              <option ${a.status==='Approved'?'selected':''}>Approved</option>
-              <option ${a.status==='Rejected'?'selected':''}>Rejected</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:0;">
-          <label style="font-size:12px;">Admin Notes</label>
-          <textarea id="modal-notes" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;resize:vertical;min-height:72px;">${a.notes||''}</textarea>
-        </div>
+      <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;">
+        <div style="font-size:13px;color:var(--navy);">Client would pay <strong>${fmt(a.balance/2)}</strong> · ReliefPath covers <strong>${fmt(a.balance/2)}</strong></div>
       </div>
-
-      <div style="display:flex;gap:10px;justify-content:flex-end;">
-        <button class="btn-xs btn-view" style="padding:10px 18px;font-size:13px;" onclick="closeModal()">Cancel</button>
-        <button class="btn-xs btn-approve" style="padding:10px 20px;font-size:13px;" onclick="saveAdminDecision('${a.id}')">Save Decision ✓</button>
+      <div style="display:flex;gap:12px;justify-content:flex-end;">
+        <button class="btn-xs btn-approve" style="padding:10px 20px;font-size:13px;" onclick="changeStatus('${a.id}','Approved');closeModal()">✓ Approve</button>
+        <button class="btn-xs btn-reject" style="padding:10px 20px;font-size:13px;" onclick="changeStatus('${a.id}','Rejected');closeModal()">✗ Reject</button>
       </div>`;
     document.getElementById('modal-overlay').classList.add('open');
-  }
-
-  function saveAdminDecision(id) {
-    const a = applications.find(x=>x.id===id);
-    a.status = document.getElementById('modal-status').value;
-    a.reliefRate = parseInt(document.getElementById('modal-rate').value)||50;
-    a.notes = document.getElementById('modal-notes').value;
-    filterTable();
-    closeModal();
-    notify(`${a.name} — ${a.status} at ${a.reliefRate}% relief rate.`, a.status==='Approved'?'success':'error');
   }
 
   function changeStatus(id, status) {
@@ -1558,7 +1420,7 @@
 
   // ── NAVIGATION ──
   const pages = ['landing','apply','login','user-dash','admin'];
-  const navMap = { landing:'nav-home', apply:'nav-apply', login:'nav-login' };
+  const navMap = { landing:'nav-home', apply:'nav-apply', login:'nav-login', admin:'nav-admin' };
 
   function showPage(p) {
     pages.forEach(id => {
@@ -1567,19 +1429,8 @@
     Object.keys(navMap).forEach(k => {
       document.getElementById(navMap[k])?.classList.toggle('active', k===p);
     });
-    // Update URL hash for admin, clear for others
-    if(p === 'admin') window.location.hash = '/admin';
-    else if(window.location.hash === '#/admin') history.pushState('','',window.location.pathname);
     window.scrollTo(0,0);
   }
-
-  // Check hash on load — if #/admin, go straight to admin
-  window.addEventListener('load', () => {
-    if(window.location.hash === '#/admin') showPage('admin');
-  });
-  window.addEventListener('hashchange', () => {
-    if(window.location.hash === '#/admin') showPage('admin');
-  });
 
   // ── FORM STEPS ──
   let currentStep = 1;
@@ -1635,131 +1486,21 @@
   }
 
   function submitApplication() {
-    const code = 'RP-'+new Date().getFullYear()+'-'+Math.floor(10000+Math.random()*90000);
-    const email = document.getElementById('f-email').value;
-    const fname = document.getElementById('f-fname').value;
-    const lname = document.getElementById('f-lname').value;
-    const bal = parseFloat(document.getElementById('f-balance').value)||0;
-    userApplication = {
-      id: code, name: fname+' '+lname, email: email, balance: bal,
-      type: document.getElementById('f-loantype').value||'Personal Loan',
-      lender: document.getElementById('f-lender').value||'—',
-      hardship: document.getElementById('f-hardship').value||'—',
-      monthly: parseFloat(document.getElementById('f-monthly').value)||0,
-      income: parseFloat(document.getElementById('f-income').value)||0,
-      status: 'Pending',
-      date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
-      reliefRate: 50, notes: '', username: '', password: ''
-    };
-    document.getElementById('ref-code-signup').textContent = code;
+    const code = 'RP-2024-'+Math.floor(10000+Math.random()*90000);
+    document.getElementById('ref-code').textContent = code;
     for(let i=1;i<=4;i++) document.getElementById('form-step-'+i).style.display='none';
     document.getElementById('form-step-5').style.display='block';
     window.scrollTo(0,120);
-    notify('Application submitted! Now create your account.','success');
-  }
-
-  function doSignup() {
-    const username = document.getElementById('su-username').value.trim();
-    const pass = document.getElementById('su-pass').value;
-    const pass2 = document.getElementById('su-pass2').value;
-    if(!username){ notify('Please choose a username.','error'); return; }
-    if(/\s/.test(username)){ notify('Username cannot contain spaces.','error'); return; }
-    if(!pass || pass.length < 8){ notify('Password must be at least 8 characters.','error'); return; }
-    if(pass !== pass2){ notify('Passwords do not match.','error'); return; }
-    currentUser = { name: userApplication.name, email: userApplication.email, username };
-    userApplication.username = username;
-    userApplication.password = pass;
-    applications.unshift({...userApplication});
-    document.getElementById('form-step-5').style.display='none';
-    document.getElementById('form-step-6').style.display='block';
-    window.scrollTo(0,120);
-    notify('Account created! Username: '+username,'success');
-  }
-
-  function goToDashboard() {
-    populateDashboard();
-    showPage('user-dash');
-    // Reset form for next use
-    currentStep = 1;
-    for(let i=1;i<=6;i++){
-      const el = document.getElementById('form-step-'+i);
-      if(el) el.style.display = i===1?'block':'none';
-    }
-    updateProgress(1);
-  }
-
-  function populateDashboard() {
-    const app = userApplication || applications[0];
-    if(!app) return;
-    const bal = app.balance;
-    const share = Math.round(bal * 0.5);
-    document.getElementById('dash-ref').textContent = app.id;
-    document.getElementById('dash-sub').textContent = `Submitted ${app.date} · Loan: ${fmt(bal)} ${app.type}`;
-    const badge = document.getElementById('dash-status-badge');
-    badge.textContent = app.status;
-    badge.className = 'badge ' + (app.status==='Approved'?'badge-approved':app.status==='Rejected'?'badge-rejected':app.status==='Under Review'?'badge-review':'badge-pending');
-    document.getElementById('ds-balance').textContent = fmt(bal);
-    document.getElementById('ds-lender').textContent = app.lender;
-    document.getElementById('ds-type').textContent = app.type;
-    document.getElementById('ds-monthly').textContent = fmt(app.monthly)+'/mo';
-    document.getElementById('ds-share').textContent = fmt(share);
-    document.getElementById('ds-save').textContent = fmt(share);
-  }
-
-  function signOut() {
-    currentUser = null;
-    showPage('landing');
+    notify('Application submitted successfully!','success');
   }
 
   // ── LOGIN ──
   function doLogin() {
-    const u = document.getElementById('l-username').value.trim();
-    const p = document.getElementById('l-pass').value;
-    if(!u||!p){ notify('Please enter your username and password.','error'); return; }
+    const e=document.getElementById('l-email').value;
+    const p=document.getElementById('l-pass').value;
+    if(!e||!p){ notify('Please enter your email and password.','error'); return; }
     notify('Signing in…');
-    setTimeout(()=>{
-      const found = applications.find(a => a.username === u && a.password === p);
-      if(found){
-        userApplication = found;
-        currentUser = { name: found.name, email: found.email, username: u };
-      } else {
-        // Demo fallback
-        currentUser = { name: 'Demo User', username: u };
-        userApplication = applications[0];
-      }
-      populateDashboard();
-      showPage('user-dash');
-    }, 900);
-  }
-
-  // ── SUPPORT CHAT ──
-  function toggleSupport() {
-    const panel = document.getElementById('support-panel');
-    panel.classList.toggle('open');
-  }
-
-  const agentReplies = [
-    "Thanks for reaching out! Can you share your application reference code so I can look into this for you?",
-    "I understand your concern. Our team is reviewing your application and will update you within 2 business days.",
-    "Great question! Once approved, you'll receive an email with your payment plan details within 24 hours.",
-    "I can see your application is in our queue. Everything looks good so far — no additional documents are needed at this time.",
-    "Is there anything else I can help you with today?"
-  ];
-  let replyIdx = 0;
-
-  function sendSupportMsg() {
-    const input = document.getElementById('support-input');
-    const msgs = document.getElementById('support-msgs');
-    const text = input.value.trim();
-    if(!text) return;
-    msgs.innerHTML += `<div class="msg user">${text}</div>`;
-    input.value = '';
-    msgs.scrollTop = msgs.scrollHeight;
-    setTimeout(()=>{
-      msgs.innerHTML += `<div class="msg agent">${agentReplies[replyIdx % agentReplies.length]}</div>`;
-      replyIdx++;
-      msgs.scrollTop = msgs.scrollHeight;
-    }, 1000);
+    setTimeout(()=>showPage('user-dash'), 900);
   }
 
   // ── NOTIFY ──

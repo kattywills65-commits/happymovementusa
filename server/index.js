@@ -38,60 +38,60 @@ function adminRequired(req, res, next) {
 
 // ── AUTH ────────────────────────────────────────────────────────────────────
 
-// POST /api/auth/signup
-app.post('/api/auth/signup', async (req, res) => {
-  const { email, password, full_name } = req.body
-  if (!email || !password || !full_name) {
-    return res.status(400).json({ error: 'email, password, and full_name are required' })
+// POST /api/auth/register
+app.post('/api/auth/register', async (req, res) => {
+  const { username, password } = req.body
+  if (!username || !password) {
+    return res.status(400).json({ error: 'username and password are required' })
   }
 
   const { data: existing } = await supabase
     .from('users')
     .select('id')
-    .eq('email', email)
+    .eq('username', username)
     .maybeSingle()
 
   if (existing) {
-    return res.status(409).json({ error: 'An account with that email already exists' })
+    return res.status(409).json({ error: 'Username already taken' })
   }
 
   const password_hash = await bcrypt.hash(password, 12)
 
   const { data: user, error } = await supabase
     .from('users')
-    .insert({ email, password_hash, full_name, role: 'user' })
-    .select('id, email, full_name, role, created_at')
+    .insert({ username, password_hash, role: 'user' })
+    .select('id, username, role, created_at')
     .single()
 
   if (error) return res.status(500).json({ error: error.message })
 
-  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
+  const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
   res.status(201).json({ token, user })
 })
 
 // POST /api/auth/login
 app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    return res.status(400).json({ error: 'email and password are required' })
+  const { username, password } = req.body
+  if (!username || !password) {
+    return res.status(400).json({ error: 'username and password are required' })
   }
 
   const { data: user, error } = await supabase
     .from('users')
-    .select('id, email, full_name, role, password_hash, created_at')
-    .eq('email', email)
+    .select('id, username, role, password_hash, created_at')
+    .eq('username', username)
     .maybeSingle()
 
   if (error || !user) {
-    return res.status(401).json({ error: 'Invalid email or password' })
+    return res.status(401).json({ error: 'Invalid username or password' })
   }
 
   const valid = await bcrypt.compare(password, user.password_hash)
   if (!valid) {
-    return res.status(401).json({ error: 'Invalid email or password' })
+    return res.status(401).json({ error: 'Invalid username or password' })
   }
 
-  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
+  const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
   const { password_hash, ...safeUser } = user
   res.json({ token, user: safeUser })
 })
@@ -113,7 +113,6 @@ app.post('/api/applications', authRequired, async (req, res) => {
     return res.status(400).json({ error: 'loan_balance, loan_type, lender, hardship_reason, and income are required' })
   }
 
-  // One application per user
   const { data: existing } = await supabase
     .from('applications')
     .select('id')
@@ -167,7 +166,7 @@ app.get('/api/admin/applications', adminRequired, async (req, res) => {
     .from('applications')
     .select(`
       *,
-      users (id, email, full_name, created_at)
+      users (id, username, created_at)
     `)
     .order('created_at', { ascending: false })
 
@@ -178,8 +177,7 @@ app.get('/api/admin/applications', adminRequired, async (req, res) => {
 
   const results = search
     ? data.filter(a =>
-        a.users?.full_name?.toLowerCase().includes(search.toLowerCase()) ||
-        a.users?.email?.toLowerCase().includes(search.toLowerCase()) ||
+        a.users?.username?.toLowerCase().includes(search.toLowerCase()) ||
         a.lender?.toLowerCase().includes(search.toLowerCase())
       )
     : data
@@ -215,4 +213,4 @@ app.patch('/api/admin/applications/:id', adminRequired, async (req, res) => {
 // ── START ───────────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log(`ReliefPath API running on http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`HappyMovement API running on http://localhost:${PORT}`))
