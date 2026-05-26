@@ -1561,6 +1561,15 @@
 
   // ── INIT ──
   renderTable(applications);
+
+  // ── ADMIN HASH ROUTING ──
+  function checkAdminRoute() {
+    if(window.location.hash === '#/admin') {
+      showPage('admin');
+    }
+  }
+  window.addEventListener('load', checkAdminRoute);
+  window.addEventListener('hashchange', checkAdminRoute);
 </script>
 </body>
 </html>
