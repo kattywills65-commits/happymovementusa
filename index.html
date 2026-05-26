@@ -1234,7 +1234,7 @@
       </div>
       <div class="sidebar-section">
         <div class="sidebar-label">Main</div>
-        <div class="sidebar-item active"><span class="sidebar-icon">▦</span> Dashboard</div>
+        <div class="sidebar-item active" onclick="notify('You are on the Dashboard.')"><span class="sidebar-icon">▦</span> Dashboard</div>
         <div class="sidebar-item" onclick="notify('Navigate to Applications in the live version.')"><span class="sidebar-icon">📋</span> Applications</div>
         <div class="sidebar-item" onclick="notify('Navigate to Approved in the live version.')"><span class="sidebar-icon">✓</span> Approved</div>
         <div class="sidebar-item" onclick="notify('Navigate to Payments in the live version.')"><span class="sidebar-icon">$</span> Payments</div>
@@ -1562,14 +1562,19 @@
   // ── INIT ──
   renderTable(applications);
 
-  // ── ADMIN HASH ROUTING ──
-  function checkAdminRoute() {
+  window.addEventListener('DOMContentLoaded', function() {
     if(window.location.hash === '#/admin') {
       showPage('admin');
     }
-  }
-  window.addEventListener('load', checkAdminRoute);
-  window.addEventListener('hashchange', checkAdminRoute);
+  });
+
+  window.addEventListener('hashchange', function() {
+    if(window.location.hash === '#/admin') {
+      showPage('admin');
+    } else if(document.getElementById('page-admin').classList.contains('active')) {
+      showPage('landing');
+    }
+  });
 </script>
 </body>
 </html>
