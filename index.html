@@ -1434,12 +1434,119 @@
     window.scrollTo(0,0);
   }
 
+  // ── FORM VALIDATION ──
+  function setFieldError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.borderColor = 'var(--danger)';
+    let err = el.parentNode.querySelector('.field-error');
+    if (!err) {
+      err = document.createElement('div');
+      err.className = 'field-error';
+      err.style.cssText = 'color:var(--danger);font-size:12px;margin-top:4px;';
+      el.parentNode.appendChild(err);
+    }
+    err.textContent = msg;
+    // clear on input
+    const clear = () => {
+      el.style.borderColor = '';
+      if (err) err.textContent = '';
+      el.removeEventListener('input', clear);
+      el.removeEventListener('change', clear);
+    };
+    el.addEventListener('input', clear);
+    el.addEventListener('change', clear);
+  }
+
+  function clearFieldErrors(ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.borderColor = '';
+      const err = el.parentNode.querySelector('.field-error');
+      if (err) err.textContent = '';
+    });
+  }
+
+  function validateStep(step) {
+    let valid = true;
+
+    if (step === 1) {
+      const fields = [
+        { id:'f-fname', label:'First Name' },
+        { id:'f-lname', label:'Last Name' },
+        { id:'f-dob',   label:'Date of Birth' },
+        { id:'f-ssn',   label:'SSN (last 4 digits)' },
+        { id:'f-email', label:'Email Address' },
+        { id:'f-phone', label:'Phone Number' },
+        { id:'f-address', label:'Home Address' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+    }
+
+    if (step === 2) {
+      const fields = [
+        { id:'f-lender',   label:'Lender Name' },
+        { id:'f-loantype', label:'Loan Type' },
+        { id:'f-balance',  label:'Outstanding Balance' },
+        { id:'f-monthly',  label:'Monthly Payment' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+    }
+
+    if (step === 3) {
+      const fields = [
+        { id:'f-employment',   label:'Employment Status' },
+        { id:'f-income',       label:'Monthly Income' },
+        { id:'f-expenses',     label:'Monthly Expenses' },
+        { id:'f-hardship',     label:'Hardship Reason' },
+        { id:'f-hardshipdesc', label:'Hardship Description' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+      // min 20 chars for description
+      const desc = document.getElementById('f-hardshipdesc');
+      if (desc && desc.value.trim().length > 0 && desc.value.trim().length < 20) {
+        setFieldError('f-hardshipdesc', 'Please provide at least 20 characters');
+        valid = false;
+      }
+      // consent checkbox
+      if (!document.getElementById('f-consent').checked) {
+        setFieldError('f-consent', 'You must accept the Terms of Service');
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
   // ── FORM STEPS ──
   let currentStep = 1;
 
   function nextStep(step) {
-    if (step===3 && !document.getElementById('f-consent').checked) {
-      notify('Please accept the Terms of Service to continue.','error'); return;
+    if (!validateStep(step)) {
+      notify('Please fill in all required fields', 'error');
+      return;
     }
     if (step===3) buildReview();
     document.getElementById('form-step-'+step).style.display='none';
