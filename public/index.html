@@ -1019,14 +1019,27 @@
           <div class="review-row"><span class="rl">Hardship Reason</span><span class="rv" id="rv-hardship">—</span></div>
         </div>
 
-        <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin-bottom:8px;">
+        <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;">
           <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">Estimated Relief Amount</div>
           <div style="font-size:13px;color:var(--text-muted);">Based on your loan balance, you could save approximately <strong id="rv-savings" style="color:var(--success);">—</strong> if approved.</div>
         </div>
 
+        <div class="form-section-title" style="margin-top:0;">Create Your Account</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Create a login so you can track your application status after submitting.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Choose a Username *</label>
+            <input type="text" id="f-username" placeholder="e.g. johndoe123">
+          </div>
+          <div class="form-group">
+            <label>Choose a Password *</label>
+            <input type="password" id="f-password" placeholder="Min. 6 characters">
+          </div>
+        </div>
+
         <div class="form-actions">
           <button class="btn-navy" onclick="prevStep(4)">← Edit Application</button>
-          <button class="btn-primary" onclick="submitApplication()" style="background:var(--success);color:white;">Submit Application ✓</button>
+          <button class="btn-primary" id="submit-btn" onclick="submitApplication()" style="background:var(--success);color:white;">Submit Application ✓</button>
         </div>
       </div>
 
@@ -1069,8 +1082,8 @@
         <h3>Welcome Back</h3>
         <p class="sub">Sign in to your HappyMovement USA account</p>
         <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" placeholder="your@email.com" id="l-email">
+          <label>Username</label>
+          <input type="text" placeholder="your username" id="l-username">
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -1079,7 +1092,7 @@
         <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
           <span class="forgot">Forgot password?</span>
         </div>
-        <button class="btn-primary" style="width:100%;" onclick="doLogin()">Sign In</button>
+        <button class="btn-primary" style="width:100%;" id="login-btn" onclick="doLogin()">Sign In</button>
         <div class="login-footer" style="margin-top:28px;">
           Don't have an account? <span onclick="showPage('apply')">Apply now →</span>
         </div>
@@ -1329,6 +1342,9 @@
 </div>
 
 <script>
+  const API_URL = 'https://happymovementusa-production.up.railway.app';
+  let userApplication = {};
+
   // ── DATA ──
   const applications = [
     { id:'RP-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14', status:'Under Review', income:4500 },
@@ -1434,12 +1450,119 @@
     window.scrollTo(0,0);
   }
 
+  // ── FORM VALIDATION ──
+  function setFieldError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.borderColor = 'var(--danger)';
+    let err = el.parentNode.querySelector('.field-error');
+    if (!err) {
+      err = document.createElement('div');
+      err.className = 'field-error';
+      err.style.cssText = 'color:var(--danger);font-size:12px;margin-top:4px;';
+      el.parentNode.appendChild(err);
+    }
+    err.textContent = msg;
+    // clear on input
+    const clear = () => {
+      el.style.borderColor = '';
+      if (err) err.textContent = '';
+      el.removeEventListener('input', clear);
+      el.removeEventListener('change', clear);
+    };
+    el.addEventListener('input', clear);
+    el.addEventListener('change', clear);
+  }
+
+  function clearFieldErrors(ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.borderColor = '';
+      const err = el.parentNode.querySelector('.field-error');
+      if (err) err.textContent = '';
+    });
+  }
+
+  function validateStep(step) {
+    let valid = true;
+
+    if (step === 1) {
+      const fields = [
+        { id:'f-fname', label:'First Name' },
+        { id:'f-lname', label:'Last Name' },
+        { id:'f-dob',   label:'Date of Birth' },
+        { id:'f-ssn',   label:'SSN (last 4 digits)' },
+        { id:'f-email', label:'Email Address' },
+        { id:'f-phone', label:'Phone Number' },
+        { id:'f-address', label:'Home Address' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+    }
+
+    if (step === 2) {
+      const fields = [
+        { id:'f-lender',   label:'Lender Name' },
+        { id:'f-loantype', label:'Loan Type' },
+        { id:'f-balance',  label:'Outstanding Balance' },
+        { id:'f-monthly',  label:'Monthly Payment' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+    }
+
+    if (step === 3) {
+      const fields = [
+        { id:'f-employment',   label:'Employment Status' },
+        { id:'f-income',       label:'Monthly Income' },
+        { id:'f-expenses',     label:'Monthly Expenses' },
+        { id:'f-hardship',     label:'Hardship Reason' },
+        { id:'f-hardshipdesc', label:'Hardship Description' },
+      ];
+      clearFieldErrors(fields.map(f=>f.id));
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          setFieldError(f.id, 'This field is required');
+          valid = false;
+        }
+      });
+      // min 20 chars for description
+      const desc = document.getElementById('f-hardshipdesc');
+      if (desc && desc.value.trim().length > 0 && desc.value.trim().length < 20) {
+        setFieldError('f-hardshipdesc', 'Please provide at least 20 characters');
+        valid = false;
+      }
+      // consent checkbox
+      if (!document.getElementById('f-consent').checked) {
+        setFieldError('f-consent', 'You must accept the Terms of Service');
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
   // ── FORM STEPS ──
   let currentStep = 1;
 
   function nextStep(step) {
-    if (step===3 && !document.getElementById('f-consent').checked) {
-      notify('Please accept the Terms of Service to continue.','error'); return;
+    if (!validateStep(step)) {
+      notify('Please fill in all required fields', 'error');
+      return;
     }
     if (step===3) buildReview();
     document.getElementById('form-step-'+step).style.display='none';
@@ -1468,41 +1591,151 @@
   }
 
   function buildReview() {
-    const fname = document.getElementById('f-fname').value||'—';
-    const lname = document.getElementById('f-lname').value||'—';
-    document.getElementById('rv-name').textContent = fname+' '+lname;
-    document.getElementById('rv-email').textContent = document.getElementById('f-email').value||'—';
+    const fname = document.getElementById('f-fname').value||'';
+    const lname = document.getElementById('f-lname').value||'';
+    const email = document.getElementById('f-email').value||'';
+    const bal   = parseFloat(document.getElementById('f-balance').value)||0;
+    const monthly = parseFloat(document.getElementById('f-monthly').value)||0;
+    const inc   = parseFloat(document.getElementById('f-income').value)||0;
+
+    document.getElementById('rv-name').textContent = (fname+' '+lname).trim()||'—';
+    document.getElementById('rv-email').textContent = email||'—';
     document.getElementById('rv-phone').textContent = document.getElementById('f-phone').value||'—';
     document.getElementById('rv-address').textContent = document.getElementById('f-address').value||'—';
     document.getElementById('rv-lender').textContent = document.getElementById('f-lender').value||'—';
     document.getElementById('rv-loantype').textContent = document.getElementById('f-loantype').value||'—';
-    const bal = parseFloat(document.getElementById('f-balance').value)||0;
     document.getElementById('rv-balance').textContent = bal?'$'+bal.toLocaleString():'—';
-    const monthly = parseFloat(document.getElementById('f-monthly').value)||0;
     document.getElementById('rv-monthly').textContent = monthly?'$'+monthly.toLocaleString()+'/mo':'—';
     document.getElementById('rv-employment').textContent = document.getElementById('f-employment').value||'—';
-    const inc = parseFloat(document.getElementById('f-income').value)||0;
     document.getElementById('rv-income').textContent = inc?'$'+inc.toLocaleString()+'/mo':'—';
     document.getElementById('rv-hardship').textContent = document.getElementById('f-hardship').value||'—';
     document.getElementById('rv-savings').textContent = bal?'$'+(bal/2).toLocaleString():'up to 50% of your loan';
+
+    // store for API calls
+    userApplication = {
+      name: (fname+' '+lname).trim(),
+      email,
+      loan_balance: bal,
+      loan_type: document.getElementById('f-loantype').value,
+      lender: document.getElementById('f-lender').value,
+      monthly_payment: monthly,
+      hardship_reason: document.getElementById('f-hardship').value,
+      income: inc,
+    };
   }
 
-  function submitApplication() {
-    const code = 'RP-2024-'+Math.floor(10000+Math.random()*90000);
-    document.getElementById('ref-code').textContent = code;
-    for(let i=1;i<=4;i++) document.getElementById('form-step-'+i).style.display='none';
-    document.getElementById('form-step-5').style.display='block';
-    window.scrollTo(0,120);
-    notify('Application submitted successfully!','success');
+  function setLoading(btnId, loading, defaultText) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? '⏳ Please wait…' : defaultText;
+    btn.style.opacity = loading ? '0.7' : '1';
+  }
+
+  async function doSignup(username, password) {
+    console.log('Calling API:', API_URL + '/api/auth/register');
+    const res = await fetch(API_URL + '/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        password,
+        full_name: userApplication.name,
+        email: userApplication.email,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || data.error || 'Registration failed');
+    localStorage.setItem('hm_token', data.token);
+    return data.token;
+  }
+
+  async function submitApplication() {
+    const username = (document.getElementById('f-username').value||'').trim();
+    const password = (document.getElementById('f-password').value||'').trim();
+    if (!username || !password) {
+      notify('Please choose a username and password to create your account', 'error');
+      return;
+    }
+    if (password.length < 6) {
+      notify('Password must be at least 6 characters', 'error');
+      return;
+    }
+
+    setLoading('submit-btn', true, 'Submit Application ✓');
+    try {
+      const token = await doSignup(username, password);
+      const ref_code = 'RP-' + Date.now();
+
+      const appRes = await fetch(API_URL + '/api/applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify({
+          ref_code,
+          loan_balance: userApplication.loan_balance,
+          loan_type: userApplication.loan_type,
+          lender: userApplication.lender,
+          monthly_payment: userApplication.monthly_payment,
+          hardship_reason: userApplication.hardship_reason,
+          income: userApplication.income,
+        }),
+      });
+      const appData = await appRes.json();
+      if (!appRes.ok) throw new Error(appData.message || appData.error || 'Submission failed');
+
+      document.getElementById('ref-code').textContent = ref_code;
+      for(let i=1;i<=4;i++) document.getElementById('form-step-'+i).style.display='none';
+      document.getElementById('form-step-5').style.display='block';
+      window.scrollTo(0,120);
+      notify('Application submitted successfully!','success');
+    } catch(err) {
+      notify(err.message || 'Something went wrong. Please try again.', 'error');
+    } finally {
+      setLoading('submit-btn', false, 'Submit Application ✓');
+    }
   }
 
   // ── LOGIN ──
-  function doLogin() {
-    const e=document.getElementById('l-email').value;
-    const p=document.getElementById('l-pass').value;
-    if(!e||!p){ notify('Please enter your email and password.','error'); return; }
-    notify('Signing in…');
-    setTimeout(()=>showPage('user-dash'), 900);
+  async function doLogin() {
+    const username = (document.getElementById('l-username').value||'').trim();
+    const password = (document.getElementById('l-pass').value||'').trim();
+    if (!username || !password) { notify('Please enter your username and password.', 'error'); return; }
+
+    setLoading('login-btn', true, 'Sign In');
+    try {
+      const res = await fetch(API_URL + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || data.error || 'Login failed');
+      localStorage.setItem('hm_token', data.token);
+      await populateDashboard(data.token);
+      showPage('user-dash');
+      notify('Welcome back!', 'success');
+    } catch(err) {
+      notify(err.message || 'Invalid username or password.', 'error');
+    } finally {
+      setLoading('login-btn', false, 'Sign In');
+    }
+  }
+
+  async function populateDashboard(token) {
+    try {
+      const res = await fetch(API_URL + '/api/applications', {
+        headers: { 'Authorization': 'Bearer ' + (token || localStorage.getItem('hm_token')) },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const app = Array.isArray(data) ? data[0] : data;
+      if (!app) return;
+      const refEl = document.querySelector('#page-user-dash .dash-header h2 span');
+      if (refEl && app.ref_code) refEl.textContent = app.ref_code;
+    } catch(e) { /* silently fail — dashboard shows demo data */ }
   }
 
   // ── NOTIFY ──
