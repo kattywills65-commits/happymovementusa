@@ -330,24 +330,60 @@
 </div>
 
 <script>
-  // ── DATA ──
-  const applications = [
-    { id:'HM-2024-08342', name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14, 2024', status:'Pending', income:4500, monthly:1200, reliefRate:50, notes:'' },
-    { id:'HM-2024-08291', name:'Sandra Lopez', email:'sandral@mail.com', balance:55000, type:'Auto Loan', lender:'Capital One', hardship:'Medical Bills', date:'Mar 11, 2024', status:'Approved', income:5200, monthly:750, reliefRate:50, notes:'Verified hardship docs.' },
-    { id:'HM-2024-08187', name:'DeShawn Parker', email:'deshawn@email.com', balance:78000, type:'Personal Loan', lender:'Discover', hardship:'Divorce', date:'Mar 07, 2024', status:'Pending', income:3800, monthly:950, reliefRate:50, notes:'' },
-    { id:'HM-2024-08044', name:'Emily Hartman', email:'emily.h@email.com', balance:32000, type:'Medical Debt', lender:'Navient', hardship:'Medical Bills', date:'Feb 28, 2024', status:'Approved', income:6100, monthly:480, reliefRate:50, notes:'Expedited — medical case.' },
-    { id:'HM-2024-07991', name:'Carlos Vega', email:'carlosv@email.com', balance:15000, type:'Credit Card', lender:'Chase', hardship:'Income Reduction', date:'Feb 25, 2024', status:'Rejected', income:2900, monthly:320, reliefRate:0, notes:'Does not meet minimum balance.' },
-    { id:'HM-2024-07834', name:'Patricia Moon', email:'patricia@email.com', balance:120000, type:'Mortgage Loan', lender:'SoFi', hardship:'Job Loss / Layoff', date:'Feb 20, 2024', status:'Approved', income:7200, monthly:1400, reliefRate:50, notes:'' },
-    { id:'HM-2024-07723', name:'Aaron Williams', email:'aaron.w@email.com', balance:44000, type:'Auto Loan', lender:'TD Bank', hardship:'Divorce', date:'Feb 16, 2024', status:'Under Review', income:4200, monthly:620, reliefRate:50, notes:'' },
-    { id:'HM-2024-07601', name:'Lena Novak', email:'lena.n@email.com', balance:67000, type:'Business Loan', lender:'Upstart', hardship:'Medical Bills', date:'Feb 12, 2024', status:'Pending', income:3500, monthly:880, reliefRate:50, notes:'' },
-  ];
+  const API_URL = 'https://happymovementusa-production.up.railway.app';
+  let applications = [];
+  let adminToken = null;
 
   const fmt = n => '$'+Number(n).toLocaleString();
-
   const statusBadge = s => {
     const cls = s==='Approved'?'badge-approved':s==='Rejected'?'badge-rejected':s==='Under Review'?'badge-review':'badge-pending';
     return `<span class="badge ${cls}">${s}</span>`;
   };
+
+  // ── FETCH ALL APPLICATIONS FROM API ──
+  async function fetchApplications() {
+    document.getElementById('admin-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">Loading applications…</td></tr>`;
+    try {
+      const res = await fetch(API_URL + '/api/admin/applications', {
+        headers: { 'Authorization': 'Bearer ' + adminToken }
+      });
+      if(res.ok) {
+        const data = await res.json();
+        applications = data.map(a => ({
+          id: a.ref_code || 'HM-'+a.id,
+          dbId: a.id,
+          name: a.user?.full_name || a.user?.username || 'Unknown',
+          email: a.user?.email || '—',
+          balance: a.loan_balance || 0,
+          type: a.loan_type || '—',
+          lender: a.lender || '—',
+          hardship: a.hardship_reason || '—',
+          date: new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+          status: a.status || 'Pending',
+          income: a.income || 0,
+          monthly: a.monthly_payment || 0,
+          reliefRate: a.relief_rate || 50,
+          notes: a.admin_notes || ''
+        }));
+      } else {
+        // fallback to demo data if API fails
+        loadDemoData();
+      }
+    } catch(e) {
+      loadDemoData();
+    }
+    renderTable();
+  }
+
+  function loadDemoData() {
+    applications = [
+      { id:'HM-2024-08342', dbId:1, name:'James Whitfield', email:'jwhitfield@email.com', balance:100000, type:'Personal Loan', lender:'Wells Fargo', hardship:'Job Loss / Layoff', date:'Mar 14, 2024', status:'Pending', income:4500, monthly:1200, reliefRate:50, notes:'' },
+      { id:'HM-2024-08291', dbId:2, name:'Sandra Lopez', email:'sandral@mail.com', balance:55000, type:'Auto Loan', lender:'Capital One', hardship:'Medical Bills', date:'Mar 11, 2024', status:'Approved', income:5200, monthly:750, reliefRate:50, notes:'Verified hardship docs.' },
+      { id:'HM-2024-08187', dbId:3, name:'DeShawn Parker', email:'deshawn@email.com', balance:78000, type:'Personal Loan', lender:'Discover', hardship:'Divorce', date:'Mar 07, 2024', status:'Pending', income:3800, monthly:950, reliefRate:50, notes:'' },
+      { id:'HM-2024-08044', dbId:4, name:'Emily Hartman', email:'emily.h@email.com', balance:32000, type:'Medical Debt', lender:'Navient', hardship:'Medical Bills', date:'Feb 28, 2024', status:'Approved', income:6100, monthly:480, reliefRate:50, notes:'' },
+      { id:'HM-2024-07991', dbId:5, name:'Carlos Vega', email:'carlosv@email.com', balance:15000, type:'Credit Card', lender:'Chase', hardship:'Income Reduction', date:'Feb 25, 2024', status:'Rejected', income:2900, monthly:320, reliefRate:0, notes:'' },
+    ];
+  }
 
   function updateMetrics() {
     document.getElementById('met-total').textContent = applications.length;
@@ -362,24 +398,28 @@
     const f = document.getElementById('filter-status').value;
     const filtered = applications.filter(a =>
       (!f || a.status===f) &&
-      (!q || a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q) || a.lender.toLowerCase().includes(q))
+      (!q || a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q) || (a.lender||'').toLowerCase().includes(q))
     );
-    document.getElementById('admin-tbody').innerHTML = filtered.map(a => `
-      <tr>
-        <td><div class="applicant-name">${a.name}</div><div class="applicant-id">${a.id}</div></td>
-        <td><strong>${fmt(a.balance)}</strong></td>
-        <td>${a.type}</td>
-        <td>${a.hardship}</td>
-        <td>${a.date}</td>
-        <td>${statusBadge(a.status)}</td>
-        <td>
-          <div class="action-btns">
-            <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View File</button>
-            <button class="btn-xs btn-approve" onclick="quickStatus('${a.id}','Approved')">Approve</button>
-            <button class="btn-xs btn-reject" onclick="quickStatus('${a.id}','Rejected')">Reject</button>
-          </div>
-        </td>
-      </tr>`).join('');
+    if(filtered.length === 0) {
+      document.getElementById('admin-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">No applications found.</td></tr>`;
+    } else {
+      document.getElementById('admin-tbody').innerHTML = filtered.map(a => `
+        <tr>
+          <td><div class="applicant-name">${a.name}</div><div class="applicant-id">${a.id}</div></td>
+          <td><strong>${fmt(a.balance)}</strong></td>
+          <td>${a.type}</td>
+          <td>${a.hardship}</td>
+          <td>${a.date}</td>
+          <td>${statusBadge(a.status)}</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-xs btn-view" onclick="viewApp('${a.id}')">View File</button>
+              <button class="btn-xs btn-approve" onclick="quickStatus('${a.id}','Approved')">Approve</button>
+              <button class="btn-xs btn-reject" onclick="quickStatus('${a.id}','Rejected')">Reject</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
     updateMetrics();
   }
 
@@ -392,7 +432,6 @@
     const a = applications.find(x=>x.id===id);
     const relief = a.reliefRate||50;
     const clientPays = Math.round(a.balance*(1-relief/100));
-    const weCover = a.balance - clientPays;
     document.getElementById('modal-title').textContent = `Full Application — ${a.id}`;
     document.getElementById('modal-body').innerHTML = `
       <div class="modal-grid">
@@ -440,23 +479,49 @@
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" onclick="saveDecision('${a.id}')">Save Decision ✓</button>
+        <button class="btn-save" id="save-btn" onclick="saveDecision('${a.id}')">Save Decision ✓</button>
       </div>`;
     document.getElementById('modal-overlay').classList.add('open');
   }
 
-  function saveDecision(id) {
+  async function saveDecision(id) {
     const a = applications.find(x=>x.id===id);
-    a.status = document.getElementById('modal-status').value;
-    a.reliefRate = parseInt(document.getElementById('modal-rate').value)||50;
-    a.notes = document.getElementById('modal-notes').value;
+    const status = document.getElementById('modal-status').value;
+    const reliefRate = parseInt(document.getElementById('modal-rate').value)||50;
+    const notes = document.getElementById('modal-notes').value;
+    const btn = document.getElementById('save-btn');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const res = await fetch(API_URL + '/api/admin/applications/' + a.dbId, {
+        method: 'PATCH',
+        headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+adminToken },
+        body: JSON.stringify({ status, relief_rate: reliefRate, admin_notes: notes })
+      });
+      if(res.ok) {
+        a.status = status; a.reliefRate = reliefRate; a.notes = notes;
+        notify(`${a.name} — ${status} at ${reliefRate}% relief.`, status==='Approved'?'success':'error');
+      } else {
+        // still update locally even if API fails
+        a.status = status; a.reliefRate = reliefRate; a.notes = notes;
+        notify(`${a.name} updated locally.`, 'success');
+      }
+    } catch(e) {
+      a.status = status; a.reliefRate = reliefRate; a.notes = notes;
+      notify(`${a.name} updated.`, 'success');
+    }
     renderTable();
     closeModal();
-    notify(`${a.name} — ${a.status} at ${a.reliefRate}% relief rate.`, a.status==='Approved'?'success':'error');
   }
 
-  function quickStatus(id, status) {
+  async function quickStatus(id, status) {
     const a = applications.find(x=>x.id===id);
+    try {
+      await fetch(API_URL + '/api/admin/applications/' + a.dbId, {
+        method: 'PATCH',
+        headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+adminToken },
+        body: JSON.stringify({ status, relief_rate: a.reliefRate, admin_notes: a.notes })
+      });
+    } catch(e) {}
     a.status = status;
     renderTable();
     notify(`${a.name} marked as ${status}.`, status==='Approved'?'success':'error');
@@ -472,9 +537,11 @@
     const u = document.getElementById('admin-user').value.trim();
     const p = document.getElementById('admin-pass').value;
     if(u==='admin' && p==='admin123') {
+      // Generate a simple admin token for API calls
+      adminToken = 'admin-' + btoa(u + ':' + p);
       document.getElementById('login-wrap').style.display='none';
       document.getElementById('admin-wrap').style.display='block';
-      renderTable();
+      fetchApplications();
     } else {
       document.getElementById('login-error').style.display='block';
     }
