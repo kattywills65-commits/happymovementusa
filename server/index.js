@@ -101,6 +101,17 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(401).json({ error: 'Invalid username or password' })
   }
 
+  // ── FIX: Link any unlinked applications to this user on login ──
+  try {
+    await supabase
+      .from('applications')
+      .update({ user_id: user.id })
+      .is('user_id', null)
+  } catch (e) {
+    console.error('Application linking failed:', e.message)
+  }
+  // ───────────────────────────────────────────────────────────────
+
   const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
   const { password: _pw, ...safeUser } = user
   res.json({ token, user: safeUser })
