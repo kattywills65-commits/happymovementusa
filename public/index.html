@@ -1667,7 +1667,7 @@
       const token = await doSignup(username, password);
       const ref_code = 'RP-' + Date.now();
 
-      const appRes = await fetch(API_URL + '/api/applications', {
+      const appRes = await fetch(API_URL + '/api/applications/me', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
