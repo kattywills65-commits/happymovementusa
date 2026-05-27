@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken')
 const { createClient } = require('@supabase/supabase-js')
 
 const app = express()
-app.use(cors())
+app.use(cors({
+  origin: ['https://happymovementusa.com', 'https://www.happymovementusa.com', 'http://localhost:5173', 'http://localhost:3001'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use(express.json())
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
