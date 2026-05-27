@@ -1343,7 +1343,7 @@
 
 <script>
   const API_URL = 'https://happymovementusa-production.up.railway.app';
-  let userApplication = {};
+  let userApplication = null;
 
   // ── DATA ──
   const applications = [
@@ -1747,10 +1747,27 @@
           reliefRate: a.relief_rate || 50,
           date: new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
         };
+      } else {
+        userApplication = null;
       }
-    } catch(e) {}
-    const app = userApplication || applications[0];
-    if(!app) return;
+    } catch(e) {
+      userApplication = null;
+    }
+    if(!userApplication) {
+      document.getElementById('dash-ref').textContent = '—';
+      document.getElementById('dash-sub').textContent = 'No application on file yet.';
+      const badge = document.getElementById('dash-status-badge');
+      badge.textContent = 'Pending';
+      badge.className = 'badge badge-pending';
+      document.getElementById('ds-balance').textContent = '$0';
+      document.getElementById('ds-lender').textContent = '—';
+      document.getElementById('ds-type').textContent = '—';
+      document.getElementById('ds-monthly').textContent = '$0/mo';
+      document.getElementById('ds-share').textContent = '$0';
+      document.getElementById('ds-save').textContent = '$0';
+      return;
+    }
+    const app = userApplication;
     const bal = app.balance;
     const share = Math.round(bal * ((app.reliefRate||50)/100));
     document.getElementById('dash-ref').textContent = app.id;
