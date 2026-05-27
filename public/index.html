@@ -1706,17 +1706,16 @@
   async function doLogin() {
     const username = (document.getElementById('l-username').value||'').trim();
     const password = (document.getElementById('l-pass').value||'').trim();
-    if (!username || !password) { notify('Please enter your username and password.', 'error'); return; }
-
-    setLoading('login-btn', true, 'Sign In');
+    if(!username||!password){ notify('Please enter your username and password.','error'); return; }
+    setLoading('login-btn', true, 'Signing In...');
     try {
       const res = await fetch(API_URL + '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error || 'Login failed');
+      if(!res.ok) throw new Error(data.message || data.error || 'Login failed');
       localStorage.setItem('hm_token', data.token);
       await populateDashboard(data.token);
       showPage('user-dash');
