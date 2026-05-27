@@ -1107,7 +1107,7 @@
     <div class="container">
       <div class="dash-header-inner">
         <div>
-          <h2>My Application — <span id="dash-ref-id" style="color:var(--gold);">RP-2024-08342</span></h2>
+          <h2>My Application — <span style="color:var(--gold);">RP-2024-08342</span></h2>
           <p>Submitted March 14, 2024 &nbsp;·&nbsp; Loan: $100,000 Personal Loan</p>
         </div>
         <div>
@@ -1737,94 +1737,6 @@
     const a = await res.json();
     const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     setEl('ref-code', a.ref_code || ('HM-' + a.id));
-    setEl('dash-ref-id', a.ref_code || ('HM-' + a.id));
-    const subEl = document.getElementById('dash-sub-id');
-    if (subEl) subEl.textContent = 'Submitted ' + new Date(a.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) + ' · Loan: 
-    setEl('rv-lender', a.lender || '—');
-    setEl('rv-balance', a.loan_balance ? '$' + Number(a.loan_balance).toLocaleString() : '—');
-    setEl('rv-monthly', a.monthly_payment ? '$' + Number(a.monthly_payment).toLocaleString() : '—');
-    setEl('rv-income', a.loan_type || '—');
-    const share = Math.round((a.loan_balance || 0) * ((a.relief_rate || 50) / 100));
-    setEl('rv-savings', '$' + Number(share).toLocaleString());
-  } catch(e) {
-    console.error('[populateDashboard]', e.message);
-  }
-}
-
-  // ── NOTIFY ──
-  function notify(msg, type='') {
-    const n=document.getElementById('notif');
-    n.textContent=msg;
-    n.className='notif show'+(type?' '+type:'');
-    clearTimeout(n._t);
-    n._t=setTimeout(()=>n.classList.remove('show'),3200);
-  }
-
-  // ── MULTIPLE LOANS ──
-  let loanCount = 0;
-  function addLoan() {
-    loanCount++;
-    const id = loanCount;
-    const block = document.createElement('div');
-    block.id = 'extra-loan-' + id;
-    block.style.cssText = 'border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:20px;position:relative;';
-    block.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div class="form-section-title" style="margin:0;border:none;padding:0;">Additional Loan #${id}</div>
-        <button type="button" onclick="document.getElementById('extra-loan-${id}').remove()" style="background:none;border:1px solid var(--gray-200);border-radius:var(--radius);padding:4px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;">Remove</button>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Lender / Bank Name</label>
-          <input type="text" placeholder="e.g. Wells Fargo, Discover">
-        </div>
-        <div class="form-group">
-          <label>Loan Type</label>
-          <select>
-            <option value="">Select loan type</option>
-            <option>Personal Loan</option>
-            <option>Student Loan (Private)</option>
-            <option>Auto Loan</option>
-            <option>Medical Debt</option>
-            <option>Credit Card Debt</option>
-            <option>Mortgage Loan</option>
-            <option>Business Loan</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Current Outstanding Balance ($)</label>
-          <input type="number" placeholder="e.g. 100000">
-        </div>
-        <div class="form-group">
-          <label>Monthly Payment Amount ($)</label>
-          <input type="number" placeholder="e.g. 850">
-        </div>
-      </div>`;
-    document.getElementById('extra-loans').appendChild(block);
-  }
-
-  // ── INIT ──
-  renderTable(applications);
-
-  window.addEventListener('DOMContentLoaded', function() {
-    if(window.location.hash === '#/admin') {
-      showPage('admin');
-    }
-  });
-
-  window.addEventListener('hashchange', function() {
-    if(window.location.hash === '#/admin') {
-      showPage('admin');
-    } else if(document.getElementById('page-admin').classList.contains('active')) {
-      showPage('landing');
-    }
-  });
-</script>
-</body>
-</html>
- + Number(a.loan_balance).toLocaleString() + ' ' + (a.loan_type || '');
     setEl('rv-lender', a.lender || '—');
     setEl('rv-balance', a.loan_balance ? '$' + Number(a.loan_balance).toLocaleString() : '—');
     setEl('rv-monthly', a.monthly_payment ? '$' + Number(a.monthly_payment).toLocaleString() : '—');
