@@ -1686,7 +1686,11 @@
       const appData = await appRes.json();
       if (!appRes.ok) throw new Error(appData.message || appData.error || 'Submission failed');
 
-      document.getElementById('ref-code').textContent = ref_code;
+      // fetch real application data so dashboard is populated
+      try { await fetchAndMapApplication(token); } catch(e) {}
+
+      const displayRef = appData.ref_code || ref_code;
+      document.getElementById('ref-code').textContent = displayRef;
       for(let i=1;i<=4;i++) document.getElementById('form-step-'+i).style.display='none';
       document.getElementById('form-step-5').style.display='block';
       window.scrollTo(0,120);
@@ -1724,17 +1728,32 @@
     }
   }
 
-  async function populateDashboard(token) {
-    try {
-      const res = await fetch(API_URL + '/api/applications', {
-        headers: { 'Authorization': 'Bearer ' + (token || localStorage.getItem('hm_token')) },
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      const app = Array.isArray(data) ? data[0] : data;
-      if (!app) return;
+  async function fetchAndMapApplication(token) {
+    const appRes = await fetch(API_URL + '/api/applications/me', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (appRes.ok) {
+      const app = await appRes.json();
+      userApplication = app;
+      // map API fields to local dashboard format
+      userApplication.id      = app.ref_code;
+      userApplication.balance = app.loan_balance;
+      userApplication.type    = app.loan_type;
+      userApplication.monthly = app.monthly_payment;
+      userApplication.hardship = app.hardship_reason;
+      userApplication.lender  = app.lender;
+      userApplication.date    = new Date(app.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      // update visible dashboard fields
       const refEl = document.querySelector('#page-user-dash .dash-header h2 span');
       if (refEl && app.ref_code) refEl.textContent = app.ref_code;
+      const balEl = document.querySelector('#page-user-dash .summary-item .sv');
+      if (balEl && app.loan_balance) balEl.textContent = '$' + Number(app.loan_balance).toLocaleString();
+    }
+  }
+
+  async function populateDashboard(token) {
+    try {
+      await fetchAndMapApplication(token || localStorage.getItem('hm_token'));
     } catch(e) { /* silently fail — dashboard shows demo data */ }
   }
 
