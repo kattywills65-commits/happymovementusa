@@ -1728,37 +1728,30 @@
   }
 
   async function populateDashboard(token) {
-    const t = token || localStorage.getItem('hm_token');
-    if(!t) return;
-    try {
-      const res = await fetch(API_URL + '/api/applications/me', {
-        headers: { 'Authorization': 'Bearer ' + t }
-      });
-      if(res.ok) {
-        const a = await res.json();
-        userApplication = {
-          id: a.ref_code || ('HM-' + a.id),
-          balance: a.loan_balance || 0,
-          type: a.loan_type || '—',
-          lender: a.lender || '—',
-          monthly: a.monthly_payment || 0,
-          hardship: a.hardship_reason || '—',
-          status: a.status || 'Pending',
-          reliefRate: a.relief_rate || 50,
-          date: new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-        };
-      } else {
-        userApplication = null;
-      }
-    } catch(e) {
+  const t = token || localStorage.getItem('hm_token');
+  if (!t) return;
+  try {
+    const res = await fetch(API_URL + '/api/applications/me', {
+      headers: { 'Authorization': 'Bearer ' + t }
+    });
+    if (res.ok) {
+      const a = await res.json();
+      userApplication = {
+        id: a.ref_code || ('HM-' + a.id),
+        balance: a.loan_balance || 0,
+        type: a.loan_type || '—',
+        lender: a.lender || '—',
+        monthly: a.monthly_payment || 0,
+        hardship: a.hardship_reason || '—',
+        status: a.status || 'Pending',
+        reliefRate: a.relief_rate || 50,
+        date: new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+    } else if (res.status === 404) {
       userApplication = null;
-    }
-    if(!userApplication) {
-      document.getElementById('dash-ref').textContent = '—';
-      document.getElementById('dash-sub').textContent = 'No application on file yet.';
-      const badge = document.getElementById('dash-status-badge');
-      badge.textContent = 'Pending';
-      badge.className = 'badge badge-pending';
+      document.getElementById('dash-ref').textContent = 'No application yet';
+      document.getElementById('dash-sub').textContent = 'You have not submitted an application.';
+      document.getElementById('dash-status-badge').textContent = '—';
       document.getElementById('ds-balance').textContent = '$0';
       document.getElementById('ds-lender').textContent = '—';
       document.getElementById('ds-type').textContent = '—';
@@ -1766,22 +1759,29 @@
       document.getElementById('ds-share').textContent = '$0';
       document.getElementById('ds-save').textContent = '$0';
       return;
+    } else {
+      throw new Error('Server error ' + res.status);
     }
-    const app = userApplication;
-    const bal = app.balance;
-    const share = Math.round(bal * ((app.reliefRate||50)/100));
-    document.getElementById('dash-ref').textContent = app.id;
-    document.getElementById('dash-sub').textContent = 'Submitted ' + app.date + ' · Loan: $' + Number(bal).toLocaleString() + ' ' + app.type;
-    const badge = document.getElementById('dash-status-badge');
-    badge.textContent = app.status;
-    badge.className = 'badge ' + (app.status==='Approved'?'badge-approved':app.status==='Rejected'?'badge-rejected':app.status==='Under Review'?'badge-review':'badge-pending');
-    document.getElementById('ds-balance').textContent = '$' + Number(bal).toLocaleString();
-    document.getElementById('ds-lender').textContent = app.lender;
-    document.getElementById('ds-type').textContent = app.type;
-    document.getElementById('ds-monthly').textContent = '$' + Number(app.monthly).toLocaleString() + '/mo';
-    document.getElementById('ds-share').textContent = '$' + Number(share).toLocaleString();
-    document.getElementById('ds-save').textContent = '$' + Number(share).toLocaleString();
+  } catch(e) {
+    console.error('[populateDashboard]', e.message);
+    notify('Could not load your application data. Please refresh.', 'error');
+    return;
   }
+  const app = userApplication;
+  const bal = app.balance;
+  const share = Math.round(bal * ((app.reliefRate || 50) / 100));
+  document.getElementById('dash-ref').textContent = app.id;
+  document.getElementById('dash-sub').textContent = 'Submitted ' + app.date + ' · Loan: $' + Number(bal).toLocaleString() + ' ' + app.type;
+  const badge = document.getElementById('dash-status-badge');
+  badge.textContent = app.status;
+  badge.className = 'badge ' + (app.status === 'Approved' ? 'badge-approved' : app.status === 'Rejected' ? 'badge-rejected' : app.status === 'Under Review' ? 'badge-review' : 'badge-pending');
+  document.getElementById('ds-balance').textContent = '$' + Number(bal).toLocaleString();
+  document.getElementById('ds-lender').textContent = app.lender;
+  document.getElementById('ds-type').textContent = app.type;
+  document.getElementById('ds-monthly').textContent = '$' + Number(app.monthly).toLocaleString() + '/mo';
+  document.getElementById('ds-share').textContent = '$' + Number(share).toLocaleString();
+  document.getElementById('ds-save').textContent = '$' + Number(share).toLocaleString();
+}
 
   // ── NOTIFY ──
   function notify(msg, type='') {
