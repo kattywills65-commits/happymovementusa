@@ -53,7 +53,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 
   const { data: existing } = await supabase
-    .from('users')
+    .from('user')
     .select('id')
     .eq('username', username)
     .maybeSingle()
@@ -65,12 +65,15 @@ app.post('/api/auth/register', async (req, res) => {
   const password_hash = await bcrypt.hash(password, 12)
 
   const { data: user, error } = await supabase
-    .from('users')
+    .from('user')
     .insert({ username, password_hash, role: 'user' })
     .select('id, username, role, created_at')
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) {
+    console.error(error)
+    return res.status(500).json({ error: error.message })
+  }
 
   const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
   res.status(201).json({ token, user })
@@ -84,7 +87,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 
   const { data: user, error } = await supabase
-    .from('users')
+    .from('user')
     .select('id, username, role, password_hash, created_at')
     .eq('username', username)
     .maybeSingle()
