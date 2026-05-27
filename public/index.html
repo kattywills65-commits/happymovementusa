@@ -1107,11 +1107,11 @@
     <div class="container">
       <div class="dash-header-inner">
         <div>
-          <h2>My Application — <span style="color:var(--gold);">RP-2024-08342</span></h2>
-          <p>Submitted March 14, 2024 &nbsp;·&nbsp; Loan: $100,000 Personal Loan</p>
+          <h2>My Application — <span id="dash-ref" style="color:var(--gold);">RP-2024-08342</span></h2>
+          <p id="dash-sub">Submitted March 14, 2024 &nbsp;·&nbsp; Loan: $100,000 Personal Loan</p>
         </div>
         <div>
-          <span class="badge badge-review">Under Review</span>
+          <span id="dash-status-badge" class="badge badge-review">Under Review</span>
           <button class="btn-outline" style="margin-left:12px;padding:8px 18px;font-size:13px;" onclick="showPage('landing')">← Sign Out</button>
         </div>
       </div>
@@ -1203,12 +1203,12 @@
         <div>
           <div class="card">
             <h3>Loan Summary</h3>
-            <div class="summary-item"><span class="sk">Loan Balance</span><span class="sv">$100,000</span></div>
-            <div class="summary-item"><span class="sk">Lender</span><span class="sv">Wells Fargo</span></div>
-            <div class="summary-item"><span class="sk">Loan Type</span><span class="sv">Personal Loan</span></div>
-            <div class="summary-item"><span class="sk">Monthly Payment</span><span class="sv">$1,200/mo</span></div>
-            <div class="summary-item"><span class="sk">Your 50% Share</span><span class="sv">$50,000</span></div>
-            <div class="summary-item highlight"><span class="sk">You Save</span><span class="sv">$50,000</span></div>
+            <div class="summary-item"><span class="sk">Loan Balance</span><span class="sv" id="ds-balance">$100,000</span></div>
+            <div class="summary-item"><span class="sk">Lender</span><span class="sv" id="ds-lender">Wells Fargo</span></div>
+            <div class="summary-item"><span class="sk">Loan Type</span><span class="sv" id="ds-type">Personal Loan</span></div>
+            <div class="summary-item"><span class="sk">Monthly Payment</span><span class="sv" id="ds-monthly">$1,200/mo</span></div>
+            <div class="summary-item"><span class="sk">Your Share</span><span class="sv" id="ds-share">$50,000</span></div>
+            <div class="summary-item highlight"><span class="sk">You Save</span><span class="sv" id="ds-save">$50,000</span></div>
           </div>
 
           <div class="card">
@@ -1687,7 +1687,7 @@
       if (!appRes.ok) throw new Error(appData.message || appData.error || 'Submission failed');
 
       // fetch real application data so dashboard is populated
-      try { await fetchAndMapApplication(token); } catch(e) {}
+      try { await populateDashboard(token); } catch(e) {}
 
       const displayRef = appData.ref_code || ref_code;
       document.getElementById('ref-code').textContent = displayRef;
@@ -1728,33 +1728,43 @@
     }
   }
 
-  async function fetchAndMapApplication(token) {
-    const appRes = await fetch(API_URL + '/api/applications/me', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (appRes.ok) {
-      const app = await appRes.json();
-      userApplication = app;
-      // map API fields to local dashboard format
-      userApplication.id      = app.ref_code;
-      userApplication.balance = app.loan_balance;
-      userApplication.type    = app.loan_type;
-      userApplication.monthly = app.monthly_payment;
-      userApplication.hardship = app.hardship_reason;
-      userApplication.lender  = app.lender;
-      userApplication.date    = new Date(app.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      // update visible dashboard fields
-      const refEl = document.querySelector('#page-user-dash .dash-header h2 span');
-      if (refEl && app.ref_code) refEl.textContent = app.ref_code;
-      const balEl = document.querySelector('#page-user-dash .summary-item .sv');
-      if (balEl && app.loan_balance) balEl.textContent = '$' + Number(app.loan_balance).toLocaleString();
-    }
-  }
-
   async function populateDashboard(token) {
+    const t = token || localStorage.getItem('hm_token');
+    if(!t) return;
     try {
-      await fetchAndMapApplication(token || localStorage.getItem('hm_token'));
-    } catch(e) { /* silently fail — dashboard shows demo data */ }
+      const res = await fetch(API_URL + '/api/applications/me', {
+        headers: { 'Authorization': 'Bearer ' + t }
+      });
+      if(res.ok) {
+        const a = await res.json();
+        userApplication = {
+          id: a.ref_code || ('HM-' + a.id),
+          balance: a.loan_balance || 0,
+          type: a.loan_type || '—',
+          lender: a.lender || '—',
+          monthly: a.monthly_payment || 0,
+          hardship: a.hardship_reason || '—',
+          status: a.status || 'Pending',
+          reliefRate: a.relief_rate || 50,
+          date: new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+        };
+      }
+    } catch(e) {}
+    const app = userApplication || applications[0];
+    if(!app) return;
+    const bal = app.balance;
+    const share = Math.round(bal * ((app.reliefRate||50)/100));
+    document.getElementById('dash-ref').textContent = app.id;
+    document.getElementById('dash-sub').textContent = 'Submitted ' + app.date + ' · Loan: $' + Number(bal).toLocaleString() + ' ' + app.type;
+    const badge = document.getElementById('dash-status-badge');
+    badge.textContent = app.status;
+    badge.className = 'badge ' + (app.status==='Approved'?'badge-approved':app.status==='Rejected'?'badge-rejected':app.status==='Under Review'?'badge-review':'badge-pending');
+    document.getElementById('ds-balance').textContent = '$' + Number(bal).toLocaleString();
+    document.getElementById('ds-lender').textContent = app.lender;
+    document.getElementById('ds-type').textContent = app.type;
+    document.getElementById('ds-monthly').textContent = '$' + Number(app.monthly).toLocaleString() + '/mo';
+    document.getElementById('ds-share').textContent = '$' + Number(share).toLocaleString();
+    document.getElementById('ds-save').textContent = '$' + Number(share).toLocaleString();
   }
 
   // ── NOTIFY ──
