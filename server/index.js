@@ -66,7 +66,7 @@ app.post('/api/auth/register', async (req, res) => {
 
   const { data: user, error } = await supabase
     .from('users')
-    .insert({ username, password_hash, role: 'user' })
+    .insert({ username, password: password_hash, role: 'user' })
     .select('id, username, role, created_at')
     .single()
 
@@ -88,7 +88,7 @@ app.post('/api/auth/login', async (req, res) => {
 
   const { data: user, error } = await supabase
     .from('users')
-    .select('id, username, role, password_hash, created_at')
+    .select('id, username, role, password, created_at')
     .eq('username', username)
     .maybeSingle()
 
@@ -96,13 +96,13 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(401).json({ error: 'Invalid username or password' })
   }
 
-  const valid = await bcrypt.compare(password, user.password_hash)
+  const valid = await bcrypt.compare(password, user.password)
   if (!valid) {
     return res.status(401).json({ error: 'Invalid username or password' })
   }
 
   const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
-  const { password_hash, ...safeUser } = user
+  const { password: _pw, ...safeUser } = user
   res.json({ token, user: safeUser })
 })
 
